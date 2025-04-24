@@ -1,0 +1,84 @@
+# .gitignore file for Java projects using Spring, Maven, Gradle,
+# and various IDEs like IntelliJ IDEA, VS Code, STS, and NetBeans.
+# Based on standard GitHub Java .gitignore and user-provided entries.
+
+# --- General Java Ignores ---
+# Compiled class file
+*.class
+
+# Log files
+*.log
+logs/  # Explicitly ignore a common logs directory
+
+# BlueJ files
+*.ctxt
+
+# Mobile Tools for Java (J2ME)
+.mtj.tmp/
+
+# Package Files #
+*.jar
+*.war
+*.nar
+*.ear
+*.zip
+*.tar.gz
+*.rar
+
+# Virtual machine crash logs
+hs_err_pid*
+replay_pid*
+
+# --- Build Tool Ignores ---
+# Maven
+target/ # Ignore Maven's default build output directory
+# Maven wrapper (uncomment if you commit the mvnw/mvnw.cmd files)
+# !.mvn/wrapper/maven-wrapper.jar
+
+# Gradle
+build/ # Ignore Gradle's default build output directory
+.gradle/ # Ignore Gradle caches and daemon files
+# Gradle wrapper (ensure these are NOT ignored if you use the wrapper)
+!gradle/wrapper/
+!**/gradlew
+!**/gradlew.bat
+
+# --- IDE Ignores ---
+### IntelliJ IDEA ###
+.idea/ # IntelliJ project directory
+*.iml # IntelliJ module files
+*.iws # IntelliJ workspace files
+*.ipr # IntelliJ project files
+out/ # Default output directory for IntelliJ
+
+### VS Code ###
+.vscode/ # Ignore VS Code specific settings and configurations (unless shared deliberately)
+
+### STS (Spring Tool Suite) / Eclipse ###
+.apt_generated # Generated sources
+.classpath # Eclipse classpath file
+.factorypath # Eclipse factory path file
+.project # Eclipse project file
+.settings/ # Eclipse settings directory
+.springBeans # STS specific file
+.sts4-cache # STS specific cache
+
+### NetBeans ###
+/nbproject/private/ # NetBeans private project files
+/nbbuild/ # NetBeans build output
+/dist/ # NetBeans distribution directory
+/nbdist/ # Another NetBeans distribution directory
+/.nb-gradle/ # NetBeans Gradle specific files
+
+# --- Other Common Ignores ---
+# Operating System files
+.DS_Store # macOS files
+
+# Spring Boot Devtools
+*.restart # Ignore Spring Boot Devtools restart files
+
+# Specific files you might want to ignore
+HELP.md # Ignoring the specific HELP.md file from the first list
+
+# Sensitive environment files
+.env
