@@ -6,6 +6,8 @@ import java.util.Set;
  * La interfaz {@code IUser} define el contrato para las entidades de usuario en
  * el sistema. Proporciona métodos para recuperar los roles de usuario, las
  * autoridades y el estado administrativo.
+ * 
+ * @deprecated
  */
 public interface IUser {
 

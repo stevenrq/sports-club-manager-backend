@@ -33,7 +33,7 @@ public class SpringSecurityConfig {
     public SpringSecurityConfig(AuthenticationConfiguration authenticationConfiguration) {
         this.authenticationConfiguration = authenticationConfiguration;
     }
-    
+
     @Bean
     AuthenticationManager authenticationManager() throws Exception {
         return authenticationConfiguration.getAuthenticationManager();
@@ -46,15 +46,20 @@ public class SpringSecurityConfig {
 
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        return http.authorizeHttpRequests(authorizeHttpRequests ->
-                        authorizeHttpRequests
-                                .requestMatchers(HttpMethod.GET, "/api/users", "api/users/page/{page}").permitAll()
-                                .requestMatchers(HttpMethod.GET, "/api/users/{id}").hasAnyRole("ADMIN", "CLUB_ADMIN")
-                                .anyRequest().authenticated())
+        return http.authorizeHttpRequests(authorizeHttpRequests -> authorizeHttpRequests
+                .requestMatchers(HttpMethod.GET, "/api/users", "/api/users/page/{page}").permitAll()
+                .requestMatchers(HttpMethod.GET, "/api/users/{id}").hasAnyRole("ADMIN")
+                .requestMatchers(HttpMethod.GET, "/api/users/username/{username}").hasAnyRole("ADMIN")
+                .requestMatchers(HttpMethod.POST, "/login").permitAll()
+                .requestMatchers(HttpMethod.POST, "/api/users").permitAll()
+                .requestMatchers(HttpMethod.PUT, "/api/users/{id}").hasAnyRole("ADMIN")
+                .requestMatchers(HttpMethod.DELETE, "/api/users/{id}").hasAnyRole("ADMIN")
+                .anyRequest().authenticated())
+
                 .addFilter(new JwtAuthenticationFilter(authenticationManager()))
                 .addFilter(new JwtValidationFilter(authenticationManager()))
-                .sessionManagement(management ->
-                        management.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+
+                .sessionManagement(management -> management.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .csrf(AbstractHttpConfigurer::disable)
                 .build();
@@ -75,8 +80,8 @@ public class SpringSecurityConfig {
 
     @Bean
     FilterRegistrationBean<CorsFilter> corsFilter() {
-        FilterRegistrationBean<CorsFilter> corsBean =
-                new FilterRegistrationBean<>(new CorsFilter(corsConfigurationSource()));
+        FilterRegistrationBean<CorsFilter> corsBean = new FilterRegistrationBean<>(
+                new CorsFilter(corsConfigurationSource()));
         corsBean.setOrder(Ordered.HIGHEST_PRECEDENCE);
         return corsBean;
     }

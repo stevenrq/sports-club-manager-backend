@@ -1,6 +1,8 @@
 package com.sportsclubmanager.backend.controller;
 
+import com.sportsclubmanager.backend.mapper.UserMapper;
 import com.sportsclubmanager.backend.model.User;
+import com.sportsclubmanager.backend.model.dto.UserResponse;
 import com.sportsclubmanager.backend.model.dto.UserUpdateRequest;
 import com.sportsclubmanager.backend.service.UserService;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -19,8 +21,11 @@ public class UserController {
 
     private final UserService<User> userService;
 
-    public UserController(@Qualifier("userService") UserService<User> userService) {
+    private final UserMapper userMapper;
+
+    public UserController(@Qualifier("userService") UserService<User> userService, UserMapper userMapper) {
         this.userService = userService;
+        this.userMapper = userMapper;
     }
 
     @PostMapping
@@ -29,33 +34,39 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<User> getById(@PathVariable Long id) {
+    public ResponseEntity<UserResponse> getById(@PathVariable Long id) {
         return userService.findById(id)
-                .map(ResponseEntity::ok)
+                .map(user -> ResponseEntity.ok(userMapper.toUserResponse(user)))
                 .orElse(ResponseEntity.notFound().build());
+
     }
 
     @GetMapping("/username/{username}")
-    public ResponseEntity<User> getByUsername(@PathVariable String username) {
+    public ResponseEntity<UserResponse> getByUsername(@PathVariable String username) {
         return userService.findByUsername(username)
-                .map(ResponseEntity::ok)
+                .map(user -> ResponseEntity.ok(userMapper.toUserResponse(user)))
                 .orElse(ResponseEntity.notFound().build());
     }
 
     @GetMapping
-    public ResponseEntity<List<User>> getAll() {
-        return ResponseEntity.ok(userService.findAll());
+    public ResponseEntity<List<UserResponse>> getAll() {
+        return ResponseEntity.ok(userService.findAll().stream()
+                .map(userMapper::toUserResponse)
+                .toList());
     }
 
     @GetMapping("/page/{page}")
-    public ResponseEntity<Page<User>> getAllPaginated(@PathVariable Integer page) {
-        return ResponseEntity.ok(userService.findAll(PageRequest.of(page, 5)));
+    public ResponseEntity<Page<UserResponse>> getAllPaginated(@PathVariable Integer page) {
+        return ResponseEntity.ok(userService.findAll(PageRequest.of(page, 5))
+                .map(userMapper::toUserResponse));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<User> update(@PathVariable Long id, @RequestBody UserUpdateRequest user) {
-        return userService.update(id, user)
-                .map(ResponseEntity::ok)
+    public ResponseEntity<UserResponse> update(@PathVariable Long id,
+            @RequestBody UserUpdateRequest userUpdateRequest) {
+
+        return userService.update(id, userUpdateRequest)
+                .map(user -> ResponseEntity.ok(userMapper.toUserResponse(user)))
                 .orElse(ResponseEntity.notFound().build());
     }
 

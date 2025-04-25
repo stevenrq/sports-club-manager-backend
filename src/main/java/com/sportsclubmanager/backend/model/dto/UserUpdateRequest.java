@@ -1,6 +1,5 @@
 package com.sportsclubmanager.backend.model.dto;
 
-import com.sportsclubmanager.backend.model.IUser;
 import com.sportsclubmanager.backend.model.Role;
 import com.sportsclubmanager.backend.util.RoleAuthorityUtils;
 
@@ -16,7 +15,7 @@ import java.util.Set;
 @Getter
 @Setter
 @ToString
-public class UserUpdateRequest implements IUser {
+public class UserUpdateRequest {
 
     @Column(nullable = false)
     private String name;
@@ -39,7 +38,6 @@ public class UserUpdateRequest implements IUser {
     @NotEmpty
     private Set<Role> roles;
 
-    @Override
     public Set<String> getRolesAndAuthorities() {
         return RoleAuthorityUtils.getRolesAndAuthorities(this.roles);
     }

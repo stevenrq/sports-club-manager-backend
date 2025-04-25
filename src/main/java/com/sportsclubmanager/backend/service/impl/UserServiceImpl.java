@@ -1,6 +1,5 @@
 package com.sportsclubmanager.backend.service.impl;
 
-import com.sportsclubmanager.backend.model.IUser;
 import com.sportsclubmanager.backend.model.Role;
 import com.sportsclubmanager.backend.model.User;
 import com.sportsclubmanager.backend.model.dto.UserUpdateRequest;
@@ -27,8 +26,6 @@ public class UserServiceImpl implements UserService<User> {
 
     private final PasswordEncoder passwordEncoder;
 
-    private static final String ROLE_ADMIN = "ROLE_ADMIN";
-
     public UserServiceImpl(UserRepository userRepository, RoleRepository roleRepository,
             PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
@@ -47,41 +44,25 @@ public class UserServiceImpl implements UserService<User> {
     @Override
     @Transactional(readOnly = true)
     public Optional<User> findById(Long id) {
-        return userRepository.findById(id)
-                .map(user -> {
-                    isAdmin(user);
-                    return user;
-                });
+        return userRepository.findById(id);
     }
 
     @Override
     @Transactional(readOnly = true)
     public Optional<User> findByUsername(String username) {
-        return userRepository.findByUsername(username)
-                .map(user -> {
-                    isAdmin(user);
-                    return user;
-                });
+        return userRepository.findByUsername(username);
     }
 
     @Override
     @Transactional(readOnly = true)
     public List<User> findAll() {
-        return this.userRepository.findAll().stream()
-                .map(user -> {
-                    isAdmin(user);
-                    return user;
-                }).toList();
+        return this.userRepository.findAll();
     }
 
     @Override
     @Transactional(readOnly = true)
     public Page<User> findAll(Pageable pageable) {
-        return this.userRepository.findAll(pageable)
-                .map(user -> {
-                    isAdmin(user);
-                    return user;
-                });
+        return this.userRepository.findAll(pageable);
     }
 
     @Override
@@ -97,7 +78,7 @@ public class UserServiceImpl implements UserService<User> {
             userUpdated.setPhoneNumber(userUpdateRequest.getPhoneNumber());
             userUpdated.setEmail(userUpdateRequest.getEmail());
             userUpdated.setUsername(userUpdateRequest.getUsername());
-            userUpdated.setRoles(getRoles(userUpdateRequest));
+            userUpdated.setRoles(RoleAuthorityUtils.getRolesFromUpdateRequest(userUpdateRequest, roleRepository));
 
             return Optional.of(userRepository.save(userUpdated));
         }
@@ -110,26 +91,7 @@ public class UserServiceImpl implements UserService<User> {
         userRepository.deleteById(id);
     }
 
-    /**
-     * Recupera el conjunto de roles asociados con el usuario dado.
-     *
-     * @param user el usuario para el cual se recuperarán los roles
-     * @return un conjunto de roles asociados con el usuario
-     */
-    private Set<Role> getRoles(IUser user) {
+    private Set<Role> getRoles(User user) {
         return RoleAuthorityUtils.getRoles(user, roleRepository);
-    }
-
-    /**
-     * Verifica si el usuario es administrador y establece la propiedad admin como
-     * true o false.
-     * 
-     * @param user el usuario a verificar si es administrador
-     */
-    private void isAdmin(User user) {
-        boolean admin = user.getRoles().stream()
-                .anyMatch(role -> role.getName().equals(ROLE_ADMIN));
-
-        user.setAdmin(admin);
     }
 }
