@@ -49,36 +49,36 @@ public class RoleAuthorityUtils {
     }
 
     /**
-     * Obtiene los roles asociados a un usuario específico. Si el usuario no tiene
-     * roles y autoridades asignados, se determina el rol basado en el tipo de
-     * usuario.
+     * Obtiene un conjunto de roles a partir de un usuario y un repositorio de
+     * roles. Por defecto, se asigna el ROL_USER a todos los usuarios; si es un
+     * tipo de usuario específico, se asigna el rol correspondiente.
      * 
-     * @param user           El usuario para el cual se obtendrán los roles.
-     * @param roleRepository Repositorio utilizado para buscar los roles por nombre.
+     * @param user           El usuario del cual se extraerán los roles y
+     *                       autoridades.
+     * @param roleRepository El repositorio de roles utilizado para buscar los
+     *                       roles por su nombre.
      * @return Un conjunto de roles asociados al usuario.
-     * @throws IllegalArgumentException Si el tipo de usuario no es reconocido.
-     * @throws NoSuchElementException   Si no se encuentra un rol específico en el
-     *                                  repositorio.
-     * @throws RoleRetrievalException   Si ocurre un error al recuperar los roles.
+     * 
+     * @throws RoleRetrievalException Si ocurre un error al recuperar los roles del
+     *                                usuario.
      */
     public static Set<Role> getRoles(User user, RoleRepository roleRepository) {
         Set<String> rolesAndAuthoritiesOfUser = user.getRolesAndAuthorities();
+        Set<Role> roles = new HashSet<>();
 
         try {
             if (rolesAndAuthoritiesOfUser.isEmpty()) {
+
+                roles.add(roleRepository.findByName(ROLE_USER).orElseThrow());
+
                 if (user instanceof ClubAdministrator) {
-                    return Set.of(roleRepository.findByName(ROLE_CLUB_ADMIN).orElseThrow());
+                    roles.add(roleRepository.findByName(ROLE_CLUB_ADMIN).orElseThrow());
                 } else if (user instanceof Coach) {
-                    return Set.of(roleRepository.findByName(ROLE_COACH).orElseThrow());
+                    roles.add(roleRepository.findByName(ROLE_COACH).orElseThrow());
                 } else if (user instanceof Player) {
-                    return Set.of(roleRepository.findByName(ROLE_PLAYER).orElseThrow());
-                } else if (user instanceof User) {
-                    return Set.of(roleRepository.findByName(ROLE_USER).orElseThrow());
-                } else {
-                    throw new IllegalArgumentException("Unknown user type: " + user.getClass().getName());
+                    roles.add(roleRepository.findByName(ROLE_PLAYER).orElseThrow());
                 }
             } else {
-                Set<Role> roles = new HashSet<>();
                 for (String role : rolesAndAuthoritiesOfUser) {
                     Optional<Role> roleOptional = roleRepository.findByName(role);
                     roleOptional.ifPresent(roles::add);
@@ -86,10 +86,13 @@ public class RoleAuthorityUtils {
                 return roles;
             }
         } catch (NoSuchElementException e) {
-            throw new NoSuchElementException("Role not found: " + e.getMessage());
-        } catch (RoleRetrievalException e) {
-            throw new RoleRetrievalException("An error occurred while retrieving roles: " + e.getMessage(), e);
+            throw new RoleRetrievalException("Error retrieving roles", e);
+        } catch (IllegalArgumentException e) {
+            throw new RoleRetrievalException("Invalid role name", e);
+        } catch (Exception e) {
+            throw new RoleRetrievalException("An unexpected error occurred", e);
         }
+        return roles;
     }
 
     public static Set<Role> getRolesFromUpdateRequest(UserUpdateRequest userUpdateRequest,
