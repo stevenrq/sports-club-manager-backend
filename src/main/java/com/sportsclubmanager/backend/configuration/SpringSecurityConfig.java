@@ -25,7 +25,7 @@ import java.util.Arrays;
 import java.util.List;
 
 @Configuration
-@EnableMethodSecurity
+@EnableMethodSecurity(securedEnabled = true, jsr250Enabled = true)
 public class SpringSecurityConfig {
 
     private final AuthenticationConfiguration authenticationConfiguration;
@@ -47,13 +47,11 @@ public class SpringSecurityConfig {
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http.authorizeHttpRequests(authorizeHttpRequests -> authorizeHttpRequests
-                .requestMatchers(HttpMethod.GET, "/api/users", "/api/users/page/{page}").permitAll()
-                .requestMatchers(HttpMethod.GET, "/api/users/{id}").hasAnyRole("ADMIN")
-                .requestMatchers(HttpMethod.GET, "/api/users/username/{username}").hasAnyRole("ADMIN")
                 .requestMatchers(HttpMethod.POST, "/login").permitAll()
                 .requestMatchers(HttpMethod.POST, "/api/users").permitAll()
-                .requestMatchers(HttpMethod.PUT, "/api/users/{id}").hasAnyRole("ADMIN")
-                .requestMatchers(HttpMethod.DELETE, "/api/users/{id}").hasAnyRole("ADMIN")
+                .requestMatchers(HttpMethod.POST, "/api/club-administrators").permitAll()
+                .requestMatchers(HttpMethod.POST, "/api/coaches").permitAll()
+                .requestMatchers(HttpMethod.POST, "/api/players").permitAll()
                 .anyRequest().authenticated())
 
                 .addFilter(new JwtAuthenticationFilter(authenticationManager()))
@@ -68,8 +66,9 @@ public class SpringSecurityConfig {
     @Bean
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
+        // TODO: Se deben utilizar sólo orígenes específicos en producción
         config.setAllowedOriginPatterns(List.of("*"));
-        config.setAllowedMethods(Arrays.asList("GET", "POST", "DELETE", "PUT"));
+        config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
         config.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type"));
         config.setAllowCredentials(true);
 

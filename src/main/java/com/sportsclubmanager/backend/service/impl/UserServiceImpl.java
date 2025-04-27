@@ -1,6 +1,5 @@
 package com.sportsclubmanager.backend.service.impl;
 
-import com.sportsclubmanager.backend.model.Role;
 import com.sportsclubmanager.backend.model.User;
 import com.sportsclubmanager.backend.model.dto.UserUpdateRequest;
 import com.sportsclubmanager.backend.repository.RoleRepository;
@@ -16,9 +15,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
-@Service(value = "userService")
+@Service
 public class UserServiceImpl implements UserService<User> {
 
     private final UserRepository userRepository;
@@ -36,7 +34,7 @@ public class UserServiceImpl implements UserService<User> {
     @Override
     @Transactional
     public User save(User user) {
-        user.setRoles(getRoles(user));
+        user.setRoles(RoleAuthorityUtils.getRoles(user, roleRepository));
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         return userRepository.save(user);
     }
@@ -89,9 +87,5 @@ public class UserServiceImpl implements UserService<User> {
     @Transactional
     public void deleteById(Long id) {
         userRepository.deleteById(id);
-    }
-
-    private Set<Role> getRoles(User user) {
-        return RoleAuthorityUtils.getRoles(user, roleRepository);
     }
 }

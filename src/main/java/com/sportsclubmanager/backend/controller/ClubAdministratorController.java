@@ -1,60 +1,70 @@
 package com.sportsclubmanager.backend.controller;
 
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.sportsclubmanager.backend.mapper.UserMapper;
-import com.sportsclubmanager.backend.model.User;
+import com.sportsclubmanager.backend.model.ClubAdministrator;
 import com.sportsclubmanager.backend.model.dto.UserResponse;
 import com.sportsclubmanager.backend.model.dto.UserUpdateRequest;
 import com.sportsclubmanager.backend.service.UserService;
+
+import java.util.List;
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
-import java.util.Optional;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 
 @RestController
-@RequestMapping("/api/users")
-public class UserController {
+@RequestMapping("/api/club-administrators")
+public class ClubAdministratorController {
 
-    private final UserService<User> userService;
+    private final UserService<ClubAdministrator> clubAdministratorService;
 
     private final UserMapper userMapper;
 
-    public UserController(@Qualifier("userServiceImpl") UserService<User> userService, UserMapper userMapper) {
-        this.userService = userService;
+    public ClubAdministratorController(
+            @Qualifier("clubAdministratorServiceImpl") UserService<ClubAdministrator> clubAdministratorService,
+            UserMapper userMapper) {
+        this.clubAdministratorService = clubAdministratorService;
         this.userMapper = userMapper;
     }
 
     @PostMapping
-    public ResponseEntity<User> create(@RequestBody User user) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(userService.save(user));
+    public ResponseEntity<ClubAdministrator> create(@RequestBody ClubAdministrator clubAdministrator) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(clubAdministratorService.save(clubAdministrator));
     }
 
     @GetMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<UserResponse> getById(@PathVariable Long id) {
-        return userService.findById(id)
-                .map(user -> ResponseEntity.ok(userMapper.toUserResponse(user)))
+        return clubAdministratorService.findById(id)
+                .map(clubAdministrator -> ResponseEntity.ok(userMapper.toUserResponse(clubAdministrator)))
                 .orElse(ResponseEntity.notFound().build());
-
     }
 
     @GetMapping("/username/{username}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<UserResponse> getByUsername(@PathVariable String username) {
-        return userService.findByUsername(username)
-                .map(user -> ResponseEntity.ok(userMapper.toUserResponse(user)))
+        return clubAdministratorService.findByUsername(username)
+                .map(clubAdministrator -> ResponseEntity.ok(userMapper.toUserResponse(clubAdministrator)))
                 .orElse(ResponseEntity.notFound().build());
     }
 
     @GetMapping
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<UserResponse>> getAll() {
-        return ResponseEntity.ok(userService.findAll().stream()
+        return ResponseEntity.ok(clubAdministratorService.findAll().stream()
                 .map(userMapper::toUserResponse)
                 .toList());
     }
@@ -62,7 +72,7 @@ public class UserController {
     @GetMapping("/page/{page}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Page<UserResponse>> getAllPaginated(@PathVariable Integer page) {
-        return ResponseEntity.ok(userService.findAll(PageRequest.of(page, 5))
+        return ResponseEntity.ok(clubAdministratorService.findAll(PageRequest.of(page, 5))
                 .map(userMapper::toUserResponse));
     }
 
@@ -71,7 +81,7 @@ public class UserController {
     public ResponseEntity<UserResponse> update(@PathVariable Long id,
             @RequestBody UserUpdateRequest userUpdateRequest) {
 
-        return userService.update(id, userUpdateRequest)
+        return clubAdministratorService.update(id, userUpdateRequest)
                 .map(user -> ResponseEntity.ok(userMapper.toUserResponse(user)))
                 .orElse(ResponseEntity.notFound().build());
     }
@@ -79,12 +89,13 @@ public class UserController {
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
-        Optional<User> userOptional = userService.findById(id);
+        Optional<ClubAdministrator> clubAdminOptional = clubAdministratorService.findById(id);
 
-        if (userOptional.isPresent()) {
-            userService.deleteById(id);
+        if (clubAdminOptional.isPresent()) {
+            clubAdministratorService.deleteById(id);
             return ResponseEntity.noContent().build();
         }
         return ResponseEntity.notFound().build();
     }
+
 }

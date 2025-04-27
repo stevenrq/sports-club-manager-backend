@@ -12,6 +12,10 @@ import lombok.ToString;
 
 import java.util.Set;
 
+/**
+ * Representa la información necesaria para actualizar un usuario.
+ * Puede utilizarse para distintos tipos de usuarios.
+ */
 @Getter
 @Setter
 @ToString

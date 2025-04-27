@@ -8,6 +8,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import com.sportsclubmanager.backend.exception.RoleRetrievalException;
 import com.sportsclubmanager.backend.model.Authority;
 import com.sportsclubmanager.backend.model.ClubAdministrator;
 import com.sportsclubmanager.backend.model.Coach;
@@ -27,6 +28,15 @@ public class RoleAuthorityUtils {
     private RoleAuthorityUtils() {
     }
 
+    /**
+     * Obtiene un conjunto de nombres de roles y autoridades a partir de un conjunto
+     * de roles.
+     * 
+     * @param roles El conjunto de roles del cual se extraerán los nombres de los
+     *              roles y autoridades.
+     * @return Un conjunto de cadenas que representan los nombres de los roles y
+     *         autoridades.
+     */
     public static Set<String> getRolesAndAuthorities(Set<Role> roles) {
         Objects.requireNonNull(roles, "The roles set must not be null");
 
@@ -49,8 +59,7 @@ public class RoleAuthorityUtils {
      * @throws IllegalArgumentException Si el tipo de usuario no es reconocido.
      * @throws NoSuchElementException   Si no se encuentra un rol específico en el
      *                                  repositorio.
-     * @throws RuntimeException         Si ocurre un error inesperado al recuperar
-     *                                  los roles.
+     * @throws RoleRetrievalException   Si ocurre un error al recuperar los roles.
      */
     public static Set<Role> getRoles(User user, RoleRepository roleRepository) {
         Set<String> rolesAndAuthoritiesOfUser = user.getRolesAndAuthorities();
@@ -78,8 +87,8 @@ public class RoleAuthorityUtils {
             }
         } catch (NoSuchElementException e) {
             throw new NoSuchElementException("Role not found: " + e.getMessage());
-        } catch (Exception e) {
-            throw new RuntimeException("An error occurred while retrieving roles: " + e.getMessage(), e);
+        } catch (RoleRetrievalException e) {
+            throw new RoleRetrievalException("An error occurred while retrieving roles: " + e.getMessage(), e);
         }
     }
 

@@ -51,6 +51,9 @@ El Backend del Gestor de Club Deportivo es una aplicación desarrollada con Spri
    ./mvnw spring-boot:run
    ```
 
+   > **_NOTA:_**
+   > Puedes usar este comando cada vez que te de algún tipo de error en tiempo de compilación debido a las librerías Lombok y MapStruct.
+
 ## Endpoints de la API
 
 ### Autenticación

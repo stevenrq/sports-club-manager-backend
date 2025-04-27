@@ -7,6 +7,10 @@ import com.sportsclubmanager.backend.model.Role;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * Representa la información de un usuario que se devuelve en las respuestas de
+ * la API. Puede utilizarse para distintos tipos de usuarios.
+ */
 @Data
 @NoArgsConstructor
 public class UserResponse {
