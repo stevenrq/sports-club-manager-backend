@@ -1,7 +1,8 @@
 package com.sportsclubmanager.backend.security.filter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.sportsclubmanager.backend.model.User;
+import com.sportsclubmanager.backend.user.model.User;
+
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import jakarta.servlet.FilterChain;

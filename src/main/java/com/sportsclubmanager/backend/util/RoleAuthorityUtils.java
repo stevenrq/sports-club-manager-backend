@@ -9,14 +9,14 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import com.sportsclubmanager.backend.exception.RoleRetrievalException;
-import com.sportsclubmanager.backend.model.Authority;
-import com.sportsclubmanager.backend.model.ClubAdministrator;
-import com.sportsclubmanager.backend.model.Coach;
-import com.sportsclubmanager.backend.model.Player;
-import com.sportsclubmanager.backend.model.Role;
-import com.sportsclubmanager.backend.model.User;
-import com.sportsclubmanager.backend.model.dto.UserUpdateRequest;
-import com.sportsclubmanager.backend.repository.RoleRepository;
+import com.sportsclubmanager.backend.member.model.ClubAdministrator;
+import com.sportsclubmanager.backend.member.model.Coach;
+import com.sportsclubmanager.backend.member.model.Player;
+import com.sportsclubmanager.backend.user.dto.UserUpdateRequest;
+import com.sportsclubmanager.backend.user.model.Authority;
+import com.sportsclubmanager.backend.user.model.Role;
+import com.sportsclubmanager.backend.user.model.User;
+import com.sportsclubmanager.backend.user.repository.RoleRepository;
 
 public class RoleAuthorityUtils {
 
