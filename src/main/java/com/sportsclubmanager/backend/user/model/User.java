@@ -56,10 +56,14 @@ public class User implements Serializable {
     @Transient
     private boolean admin;
 
-    @ManyToMany(fetch = FetchType.EAGER, cascade = { CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST,
-            CascadeType.REFRESH })
+    @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST,
+            CascadeType.REFRESH})
     @JoinTable(name = "users_roles", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> roles = new HashSet<>();
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "affiliation_status")
+    private AffiliationStatus affiliationStatus;
 
     @PrePersist
     private void prePersist() {
@@ -67,6 +71,7 @@ public class User implements Serializable {
         this.accountNonExpired = true;
         this.accountNonLocked = true;
         this.credentialsNonExpired = true;
+        this.affiliationStatus = AffiliationStatus.ACTIVE;
     }
 
     public Set<String> getRolesAndAuthorities() {

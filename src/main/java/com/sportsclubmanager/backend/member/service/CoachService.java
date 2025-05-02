@@ -3,6 +3,7 @@ package com.sportsclubmanager.backend.member.service;
 import java.util.List;
 import java.util.Optional;
 
+import com.sportsclubmanager.backend.user.model.AffiliationStatus;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -87,5 +88,18 @@ public class CoachService implements BaseUserService<Coach> {
     @Transactional
     public void deleteById(Long id) {
         coachRepository.deleteById(id);
+    }
+
+    @Override
+    public boolean updateAffiliationStatus(Long id, AffiliationStatus affiliationStatus) {
+        Optional<Coach> coachOptional = coachRepository.findById(id);
+
+        if (coachOptional.isPresent()) {
+            Coach coach = coachOptional.orElseThrow();
+            coach.setAffiliationStatus(affiliationStatus);
+            coachRepository.save(coach);
+            return true;
+        }
+        return false;
     }
 }

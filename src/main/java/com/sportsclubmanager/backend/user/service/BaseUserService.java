@@ -1,5 +1,6 @@
 package com.sportsclubmanager.backend.user.service;
 
+import com.sportsclubmanager.backend.user.model.AffiliationStatus;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -29,4 +30,6 @@ public interface BaseUserService<T> {
     Optional<T> update(Long id, UserUpdateRequest userUpdateRequest);
 
     void deleteById(Long id);
+
+    boolean updateAffiliationStatus(Long id, AffiliationStatus affiliationStatus);
 }

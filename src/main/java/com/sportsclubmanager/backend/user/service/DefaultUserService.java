@@ -1,6 +1,7 @@
 package com.sportsclubmanager.backend.user.service;
 
 import com.sportsclubmanager.backend.user.dto.UserUpdateRequest;
+import com.sportsclubmanager.backend.user.model.AffiliationStatus;
 import com.sportsclubmanager.backend.user.model.User;
 import com.sportsclubmanager.backend.user.repository.RoleRepository;
 import com.sportsclubmanager.backend.user.repository.UserRepository;
@@ -86,5 +87,18 @@ public class DefaultUserService implements BaseUserService<User> {
     @Transactional
     public void deleteById(Long id) {
         userRepository.deleteById(id);
+    }
+
+    @Override
+    public boolean updateAffiliationStatus(Long id, AffiliationStatus affiliationStatus) {
+        Optional<User> userOptional = userRepository.findById(id);
+
+        if (userOptional.isPresent()) {
+            User user = userOptional.orElseThrow();
+            user.setAffiliationStatus(affiliationStatus);
+            userRepository.save(user);
+            return true;
+        }
+        return false;
     }
 }

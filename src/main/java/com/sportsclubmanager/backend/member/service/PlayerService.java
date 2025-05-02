@@ -3,6 +3,7 @@ package com.sportsclubmanager.backend.member.service;
 import java.util.List;
 import java.util.Optional;
 
+import com.sportsclubmanager.backend.user.model.AffiliationStatus;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -25,7 +26,7 @@ public class PlayerService implements BaseUserService<Player> {
     private final PasswordEncoder passwordEncoder;
 
     public PlayerService(PlayerRepository playerRepository, RoleRepository roleRepository,
-            PasswordEncoder passwordEncoder) {
+                         PasswordEncoder passwordEncoder) {
         this.playerRepository = playerRepository;
         this.roleRepository = roleRepository;
         this.passwordEncoder = passwordEncoder;
@@ -81,5 +82,18 @@ public class PlayerService implements BaseUserService<Player> {
     @Override
     public void deleteById(Long id) {
         playerRepository.deleteById(id);
+    }
+
+    @Override
+    public boolean updateAffiliationStatus(Long id, AffiliationStatus affiliationStatus) {
+        Optional<Player> playerOptional = playerRepository.findById(id);
+
+        if (playerOptional.isPresent()) {
+            Player player = playerOptional.orElseThrow();
+            player.setAffiliationStatus(affiliationStatus);
+            playerRepository.save(player);
+            return true;
+        }
+        return false;
     }
 }

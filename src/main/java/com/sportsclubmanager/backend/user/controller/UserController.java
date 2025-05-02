@@ -1,5 +1,6 @@
 package com.sportsclubmanager.backend.user.controller;
 
+import com.sportsclubmanager.backend.user.model.AffiliationStatus;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -70,7 +71,7 @@ public class UserController {
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<UserResponse> update(@PathVariable Long id,
-            @RequestBody UserUpdateRequest userUpdateRequest) {
+                                               @RequestBody UserUpdateRequest userUpdateRequest) {
 
         return userService.update(id, userUpdateRequest)
                 .map(user -> ResponseEntity.ok(userMapper.toUserResponse(user)))
@@ -85,6 +86,16 @@ public class UserController {
         if (userOptional.isPresent()) {
             userService.deleteById(id);
             return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.notFound().build();
+    }
+
+    @PatchMapping("/change-affiliation-status/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<Void> updateAffiliationStatus(@PathVariable Long id, @RequestBody AffiliationStatus affiliationStatus) {
+        boolean updated = userService.updateAffiliationStatus(id, affiliationStatus);
+        if (updated) {
+            return ResponseEntity.ok().build();
         }
         return ResponseEntity.notFound().build();
     }
