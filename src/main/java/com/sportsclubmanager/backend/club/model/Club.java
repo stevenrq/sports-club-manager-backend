@@ -29,7 +29,7 @@ public class Club {
     @Column(nullable = false, unique = true)
     private String address;
 
-    @Column(name = "phone_number", unique = true)
+    @Column(name = "phone_number", unique = true, nullable = false)
     private String phoneNumber;
 
     @Column(nullable = false)
@@ -38,15 +38,21 @@ public class Club {
     @Column(name = "creation_date")
     private LocalDateTime creationDate;
 
+    @JsonIgnoreProperties(value = {"club"})
     @OneToOne(mappedBy = "club")
-    @JsonIgnoreProperties({"handler", "hibernateLazyInitializer", "club"})
     private ClubAdministrator clubAdministrator;
 
-    @JsonIgnoreProperties({"handler", "hibernateLazyInitializer", "club"})
+    @JsonIgnoreProperties(value = {"club"})
     @OneToMany(mappedBy = "club")
     private Set<Coach> coaches = new HashSet<>();
 
-    @JsonIgnoreProperties({"handler", "hibernateLazyInitializer", "club"})
+    @JsonIgnoreProperties(value = {"club"})
     @OneToMany(mappedBy = "club")
     private Set<Player> players = new HashSet<>();
+
+    @PrePersist
+    private void prePersist() {
+        creationDate = LocalDateTime.now();
+        enabled = true;
+    }
 }

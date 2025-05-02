@@ -1,6 +1,5 @@
 package com.sportsclubmanager.backend.user.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.sportsclubmanager.backend.util.RoleAuthorityUtils;
 
 import jakarta.persistence.*;
@@ -57,14 +56,13 @@ public class User implements Serializable {
     @Transient
     private boolean admin;
 
-    @JsonIgnoreProperties({ "handler", "hibernateLazyInitializer" })
     @ManyToMany(fetch = FetchType.EAGER, cascade = { CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST,
             CascadeType.REFRESH })
     @JoinTable(name = "users_roles", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> roles = new HashSet<>();
 
     @PrePersist
-    public void prePersist() {
+    private void prePersist() {
         this.enabled = true;
         this.accountNonExpired = true;
         this.accountNonLocked = true;

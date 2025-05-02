@@ -28,10 +28,10 @@ public class ClubController {
         this.clubMapper = clubMapper;
     }
 
-    @PostMapping
+    @PostMapping("/club-administrator/{clubAdminId}")
     @PreAuthorize("hasAnyRole('CLUB_ADMIN', 'ADMIN')")
-    public ResponseEntity<Club> create(@RequestBody Club club) {
-        return ResponseEntity.ok(clubService.save(club));
+    public ResponseEntity<Club> create(@RequestBody Club club, @PathVariable Long clubAdminId) {
+        return ResponseEntity.ok(clubService.save(club, clubAdminId));
     }
 
     @GetMapping("/{id}")

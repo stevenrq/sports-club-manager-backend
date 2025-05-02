@@ -56,20 +56,23 @@ create table if not exists players
 create table if not exists clubs
 (
     id                    bigint auto_increment,
-    club_administrator_id bigint       not null,
-    coach_id              bigint       not null,
-    player_id             bigint       not null,
+    club_administrator_id bigint,
+    coach_id              bigint,
+    player_id             bigint,
     name                  varchar(255) not null,
     address               varchar(255) not null,
     phone_number          varchar(255) not null,
     enabled               boolean      not null default true,
-    creation_date         datetime     not null,
-    primary key (id, club_administrator_id, coach_id, player_id),
+    creation_date         datetime     not null default now(),
+    primary key (id),
     constraint fk_clubs_club_administrators_id
         foreign key (club_administrator_id) references club_administrators (id),
     constraint fk_clubs_coaches_id
         foreign key (coach_id) references coaches (id),
-    constraint fk_clubs_players_id foreign key (player_id) references players (id)
+    constraint fk_clubs_players_id foreign key (player_id) references players (id),
+    unique key uk_clubs_name (name),
+    unique key uk_clubs_phone_number (phone_number)
+
 );
 
 create table if not exists roles

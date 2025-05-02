@@ -11,7 +11,7 @@ import com.sportsclubmanager.backend.club.model.Club;
 
 public interface BaseClubService {
 
-    Club save(Club club);
+    Club save(Club club, Long clubAdminId);
 
     Optional<Club> findById(Long id);
 

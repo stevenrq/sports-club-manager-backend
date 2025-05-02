@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Optional;
 
 import com.sportsclubmanager.backend.exception.ClubDeletingException;
+import com.sportsclubmanager.backend.member.model.ClubAdministrator;
+import com.sportsclubmanager.backend.member.service.ClubAdministratorService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -15,14 +17,44 @@ import org.springframework.stereotype.Service;
 @Service
 public class DefaultClubService implements BaseClubService {
 
+    private final ClubAdministratorService clubAdministratorService;
+
     private final ClubRepository clubRepository;
 
-    public DefaultClubService(ClubRepository clubRepository) {
+    public DefaultClubService(ClubRepository clubRepository, ClubAdministratorService clubAdministratorService) {
         this.clubRepository = clubRepository;
+        this.clubAdministratorService = clubAdministratorService;
     }
 
+    /**
+     * Guarda un club en la base de datos y lo asocia con un administrador de club.
+     *
+     * @param club        El objeto `Club` que se desea guardar.
+     * @param clubAdminId El ID del administrador del club que se asociará con el club.
+     * @return El objeto `Club` guardado en la base de datos.
+     * @throws IllegalArgumentException Si el ID del administrador del club es nulo,
+     *                                  si no se encuentra un administrador con el ID proporcionado,
+     *                                  o si el administrador ya tiene un club asignado.
+     */
     @Override
-    public Club save(Club club) {
+    public Club save(Club club, Long clubAdminId) {
+        if (clubAdminId == null) {
+            throw new IllegalArgumentException("Club Administrator ID must not be null");
+        }
+
+        Optional<ClubAdministrator> clubAdminOptional = clubAdministratorService.findById(clubAdminId);
+        if (clubAdminOptional.isEmpty()) {
+            throw new IllegalArgumentException("Club Administrator with ID " + clubAdminId + " not found");
+        }
+
+        ClubAdministrator clubAdmin = clubAdminOptional.orElseThrow();
+        if (clubAdmin.getClub() != null) {
+            throw new IllegalArgumentException("Club Administrator already has a club assigned with ID " + clubAdmin.getClub().getId());
+        }
+
+        club.setClubAdministrator(clubAdmin);
+        clubAdmin.setClub(club);
+
         return clubRepository.save(club);
     }
 
@@ -66,7 +98,6 @@ public class DefaultClubService implements BaseClubService {
      *
      * @param id El ID del club a eliminar.
      * @throws ClubDeletingException Si ocurre un error al desvincular las relaciones del club.
-     * @apiNote Se debe tener en cuenta que el id del club en las tablas relacionadas (miembros) serán nulos.
      */
     @Override
     public void deleteById(Long id) {
