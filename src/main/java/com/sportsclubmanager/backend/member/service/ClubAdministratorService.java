@@ -13,18 +13,18 @@ import com.sportsclubmanager.backend.member.model.ClubAdministrator;
 import com.sportsclubmanager.backend.member.repository.ClubAdministratorRepository;
 import com.sportsclubmanager.backend.user.dto.UserUpdateRequest;
 import com.sportsclubmanager.backend.user.repository.RoleRepository;
-import com.sportsclubmanager.backend.user.service.UserService;
+import com.sportsclubmanager.backend.user.service.BaseUserService;
 import com.sportsclubmanager.backend.util.RoleAuthorityUtils;
 
 @Service
-public class ClubAdministratorServiceImpl implements UserService<ClubAdministrator> {
+public class ClubAdministratorService implements BaseUserService<ClubAdministrator> {
 
     private final ClubAdministratorRepository clubAdministratorRepository;
     private final RoleRepository roleRepository;
 
     private final PasswordEncoder passwordEncoder;
 
-    public ClubAdministratorServiceImpl(ClubAdministratorRepository clubAdministratorRepository,
+    public ClubAdministratorService(ClubAdministratorRepository clubAdministratorRepository,
             RoleRepository roleRepository, PasswordEncoder passwordEncoder) {
         this.clubAdministratorRepository = clubAdministratorRepository;
         this.roleRepository = roleRepository;

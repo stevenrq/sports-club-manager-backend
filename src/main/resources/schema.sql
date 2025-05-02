@@ -1,3 +1,6 @@
+# Deshabilita las comprobaciones de claves foráneas para evitar errores al crear tablas
+set foreign_key_checks = 0;
+
 create table if not exists users
 (
     id                      bigint auto_increment,
@@ -19,26 +22,54 @@ create table if not exists users
 
 create table if not exists club_administrators
 (
-    id bigint not null,
+    id      bigint not null,
+    club_id bigint,
     primary key (id),
     constraint fk_club_administrators_users_id
-        foreign key (id) references users (id)
+        foreign key (id) references users (id),
+    constraint fk_club_administrators_club_id
+        foreign key (club_id) references clubs (id)
 );
 
 create table if not exists coaches
 (
-    id bigint not null,
+    id      bigint not null,
+    club_id bigint,
     primary key (id),
     constraint fk_coaches_users_id
-        foreign key (id) references users (id)
+        foreign key (id) references users (id),
+    constraint fk_coaches_club_id
+        foreign key (club_id) references clubs (id)
 );
 
 create table if not exists players
 (
-    id bigint not null,
+    id      bigint not null,
+    club_id bigint,
     primary key (id),
     constraint fk_players_users_id
-        foreign key (id) references users (id)
+        foreign key (id) references users (id),
+    constraint fk_players_club_id
+        foreign key (club_id) references clubs (id)
+);
+
+create table if not exists clubs
+(
+    id                    bigint auto_increment,
+    club_administrator_id bigint       not null,
+    coach_id              bigint       not null,
+    player_id             bigint       not null,
+    name                  varchar(255) not null,
+    address               varchar(255) not null,
+    phone_number          varchar(255) not null,
+    enabled               boolean      not null default true,
+    creation_date         datetime     not null,
+    primary key (id, club_administrator_id, coach_id, player_id),
+    constraint fk_clubs_club_administrators_id
+        foreign key (club_administrator_id) references club_administrators (id),
+    constraint fk_clubs_coaches_id
+        foreign key (coach_id) references coaches (id),
+    constraint fk_clubs_players_id foreign key (player_id) references players (id)
 );
 
 create table if not exists roles
@@ -75,21 +106,5 @@ create table if not exists roles_authorities
     constraint fk_roles_authorities_authority_id foreign key (authority_id) references authorities (id)
 );
 
-create table if not exists clubs
-(
-    id                    bigint auto_increment,
-    club_administrator_id bigint       not null,
-    coach_id              bigint       not null,
-    player_id             bigint       not null,
-    name                  varchar(255) not null,
-    address               varchar(255) not null,
-    phone_number          varchar(255) not null,
-    status                varchar(255) not null,
-    creation_date         datetime     not null,
-    primary key (id, club_administrator_id, coach_id, player_id),
-    constraint fk_clubs_club_administrators_id
-        foreign key (club_administrator_id) references club_administrators (id),
-    constraint fk_clubs_coaches_id
-        foreign key (coach_id) references coaches (id),
-    constraint fk_clubs_players_id foreign key (player_id) references players (id)
-);
+# Habilita las comprobaciones de claves foráneas de nuevo para evitar errores al crear tablas
+set foreign_key_checks = 1;

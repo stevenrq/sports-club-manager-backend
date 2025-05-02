@@ -12,7 +12,7 @@ import com.sportsclubmanager.backend.user.dto.UserResponse;
 import com.sportsclubmanager.backend.user.dto.UserUpdateRequest;
 import com.sportsclubmanager.backend.user.mapper.UserMapper;
 import com.sportsclubmanager.backend.user.model.User;
-import com.sportsclubmanager.backend.user.service.UserService;
+import com.sportsclubmanager.backend.user.service.BaseUserService;
 
 import java.util.List;
 import java.util.Optional;
@@ -21,11 +21,11 @@ import java.util.Optional;
 @RequestMapping("/api/users")
 public class UserController {
 
-    private final UserService<User> userService;
+    private final BaseUserService<User> userService;
 
     private final UserMapper userMapper;
 
-    public UserController(@Qualifier("userServiceImpl") UserService<User> userService, UserMapper userMapper) {
+    public UserController(@Qualifier("defaultUserService") BaseUserService<User> userService, UserMapper userMapper) {
         this.userService = userService;
         this.userMapper = userMapper;
     }

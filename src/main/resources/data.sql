@@ -1,3 +1,6 @@
+# Deshabilita las comprobaciones de claves foráneas para evitar errores al crear tablas
+set foreign_key_checks = 0;
+
 -- Las contraseñas son las mismas que el nombre de usuario, pero encriptadas con BCrypt.
 insert into users (id,
                    name,
@@ -304,36 +307,89 @@ values (1,
         true,
         true);
 
-insert into club_administrators(id)
-values (2),
-       (3),
-       (4),
-       (5),
-       (6);
+insert into clubs(club_administrator_id,
+                  coach_id,
+                  player_id,
+                  name,
+                  address,
+                  phone_number,
+                  enabled,
+                  creation_date)
+-- Club 1
+values (2,
+        7,
+        12,
+        'Club de Ajedrez Central',
+        'Calle Principal 123',
+        '1234567890',
+        true,
+        now()),
 
-insert into coaches(id)
-values (7),
-       (8),
-       (9),
-       (10),
-       (11);
+       -- Club 2
+       (3,
+        8,
+        13,
+        'Club de Ajedrez Torre Blanca',
+        'Avenida Torre 456',
+        '0987654321',
+        true,
+        now()),
 
-insert into players(id)
-values (12),
-       (13),
-       (14),
-       (15),
-       (16),
-       (17),
-       (18),
-       (19),
-       (20),
-       (21),
-       (22),
-       (23),
-       (24),
-       (25),
-       (26);
+       -- Club 3
+       (4,
+        9,
+        14,
+        'Club de Ajedrez Gambito',
+        'Calle Gambito 789',
+        '1122334455',
+        true,
+        now()),
+
+       -- Club 4
+       (5,
+        10,
+        15,
+        'Club de Ajedrez Rey Negro',
+        'Avenida Rey 101',
+        '2233445566',
+        true,
+        now()),
+
+       -- Club 5
+       (6,
+        11,
+        16,
+        'Club de Ajedrez Peón Dorado',
+        'Calle Peón 202',
+        '3344556677',
+        true,
+        now());
+
+insert into club_administrators(id, club_id)
+values (2, 1),
+       (3, 2),
+       (4, 3),
+       (5, 4),
+       (6, 5);
+
+insert into coaches(id, club_id)
+values (7, 1),
+       (8, 2),
+       (9, 3),
+       (10, 4),
+       (11, 5);
+
+insert into players(id, club_id)
+values (12, 1),
+       (13, 2),
+       (14, 3),
+       (15, 4),
+       (16, 5),
+       (17, 1),
+       (18, 2),
+       (19, 3),
+       (20, 4),
+       (21, 5);
 
 insert into roles (name)
 values ('ROLE_ADMIN'),
@@ -382,13 +438,8 @@ values (1, 1),
        (19, 4),
        (20, 4),
        (21, 4),
-       (22, 4),
-       (23, 4),
-       (24, 4),
-       (25, 4),
-       (26, 4),
 
-       -- Usuarios
+       -- Usuarios (todos)
        (1, 5),
        (2, 5),
        (3, 5),
@@ -442,3 +493,6 @@ values (1, 1),
        (4, 7),
 
        (5, 8);
+
+# Habilita las comprobaciones de claves foráneas de nuevo para evitar errores al crear tablas
+set foreign_key_checks = 1;

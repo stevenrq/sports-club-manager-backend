@@ -1,10 +1,9 @@
-package com.sportsclubmanager.backend.member.service;
+package com.sportsclubmanager.backend.user.service;
 
 import com.sportsclubmanager.backend.user.dto.UserUpdateRequest;
 import com.sportsclubmanager.backend.user.model.User;
 import com.sportsclubmanager.backend.user.repository.RoleRepository;
 import com.sportsclubmanager.backend.user.repository.UserRepository;
-import com.sportsclubmanager.backend.user.service.UserService;
 import com.sportsclubmanager.backend.util.RoleAuthorityUtils;
 
 import org.springframework.data.domain.Page;
@@ -17,14 +16,14 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class UserServiceImpl implements UserService<User> {
+public class DefaultUserService implements BaseUserService<User> {
 
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
 
     private final PasswordEncoder passwordEncoder;
 
-    public UserServiceImpl(UserRepository userRepository, RoleRepository roleRepository,
+    public DefaultUserService(UserRepository userRepository, RoleRepository roleRepository,
             PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;

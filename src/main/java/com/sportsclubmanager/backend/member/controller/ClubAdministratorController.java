@@ -8,7 +8,7 @@ import com.sportsclubmanager.backend.member.model.ClubAdministrator;
 import com.sportsclubmanager.backend.user.dto.UserResponse;
 import com.sportsclubmanager.backend.user.dto.UserUpdateRequest;
 import com.sportsclubmanager.backend.user.mapper.UserMapper;
-import com.sportsclubmanager.backend.user.service.UserService;
+import com.sportsclubmanager.backend.user.service.BaseUserService;
 
 import java.util.List;
 import java.util.Optional;
@@ -29,12 +29,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 @RequestMapping("/api/club-administrators")
 public class ClubAdministratorController {
 
-    private final UserService<ClubAdministrator> clubAdministratorService;
+    private final BaseUserService<ClubAdministrator> clubAdministratorService;
 
     private final UserMapper userMapper;
 
     public ClubAdministratorController(
-            @Qualifier("clubAdministratorServiceImpl") UserService<ClubAdministrator> clubAdministratorService,
+            @Qualifier("clubAdministratorService") BaseUserService<ClubAdministrator> clubAdministratorService,
             UserMapper userMapper) {
         this.clubAdministratorService = clubAdministratorService;
         this.userMapper = userMapper;
