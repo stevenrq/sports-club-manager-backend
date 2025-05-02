@@ -44,11 +44,11 @@ El Backend del Gestor de Club Deportivo es una aplicación desarrollada con Spri
    ./mvnw clean install
    ```
 
+   > **_NOTA:_**
+   > Puedes usar este comando o reconstruir el proyecto cada vez que te de algún tipo de error en tiempo de compilación debido a las librerías Lombok y MapStruct.
+
 4. **Ejecutar la Aplicación**: Inicia la aplicación:
 
    ```bash
    ./mvnw spring-boot:run
    ```
-
-   > **_NOTA:_**
-   > Puedes usar este comando cada vez que te de algún tipo de error en tiempo de compilación debido a las librerías Lombok y MapStruct.
