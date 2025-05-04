@@ -1,15 +1,17 @@
-# Backend del Gestor de Club Deportivo
+# Sports Club Manager - Backend
 
-El Backend del Gestor de Club Deportivo es una aplicación desarrollada con Spring Boot que permite gestionar las operaciones de un club deportivo. Proporciona un sistema robusto para la administración de usuarios, control de acceso basado en roles y autenticación segura mediante JWT. La aplicación está diseñada para ser escalable y segura, ideal para gestionar jugadores, entrenadores, administradores y otros roles dentro de un club deportivo.
+El **Sports Club Manager** es una plataforma digital diseñada para facilitar la conexión entre jugadores, clubes y eventos de ajedrez en Montería. Su objetivo principal es optimizar la gestión administrativa y promover el deporte en la ciudad, aumentando la participación en la comunidad ajedrecística y mejorando la visibilidad de actividades y torneos.
 
 ## Características
 
-- **Gestión de Usuarios**: Crear, actualizar, eliminar y consultar información de usuarios.
-- **Control de Acceso Basado en Roles**: Asignación de roles y permisos para un control de acceso detallado.
+- **Gestión de Usuarios**: Crear, actualizar, eliminar y consultar información de usuarios, incluyendo jugadores, entrenadores y administradores.
+- **Gestión de Clubes**: Administración de clubes de ajedrez, incluyendo detalles como dirección, número de teléfono y estado de habilitación.
+- **Gestión de Eventos**: Organización y promoción de torneos y actividades relacionadas con el ajedrez.
+- **Control de Acceso Basado en Roles**: Asignación de roles (administrador, entrenador, jugador) y permisos para un control de acceso detallado.
 - **Autenticación y Autorización**: Protección de endpoints mediante autenticación basada en JWT.
-- **Paginación**: Soporte para la recuperación paginada de datos de usuarios.
+- **Paginación y Filtros**: Soporte para la recuperación paginada y filtrada de datos.
 - **Configuración de CORS**: Permite solicitudes de origen cruzado para la integración con el frontend.
-- **Extensibilidad**: Fácilmente ampliable para incluir nuevos roles y funcionalidades.
+- **Extensibilidad**: Fácilmente ampliable para incluir nuevos roles, funcionalidades y tipos de eventos.
 
 ## Tecnologías Utilizadas
 
@@ -17,10 +19,19 @@ El Backend del Gestor de Club Deportivo es una aplicación desarrollada con Spri
 - **Spring Data JPA**: Para la gestión de la persistencia de datos.
 - **Spring Security**: Para autenticación y autorización.
 - **JWT**: Autenticación basada en tokens para acceso seguro.
-- **MySQL**: Base de datos relacional para almacenar datos de usuarios y roles.
+- **MySQL**: Base de datos relacional para almacenar datos de usuarios, roles, clubes y eventos.
 - **Lombok**: Simplifica el código Java reduciendo el boilerplate.
 - **MapStruct**: Para la conversión entre entidades y DTOs (Data Transfer Objects).
 - **Maven**: Herramienta de construcción y gestión de dependencias.
+
+## Objetivo del Proyecto
+
+Desarrollar e implementar **Sports Club Manager**, una plataforma que facilite la conexión entre jugadores, clubes y eventos de ajedrez en Montería. Esto permitirá:
+
+- Optimizar la gestión administrativa de clubes y eventos.
+- Promover el deporte del ajedrez en la ciudad.
+- Aumentar la participación en la comunidad ajedrecística.
+- Mejorar la visibilidad de actividades y torneos.
 
 ## Cómo Empezar
 
@@ -52,3 +63,17 @@ El Backend del Gestor de Club Deportivo es una aplicación desarrollada con Spri
    ```bash
    ./mvnw spring-boot:run
    ```
+
+## Contribuciones
+
+¡Las contribuciones son bienvenidas! Si deseas colaborar, por favor sigue estos pasos:
+
+1. Haz un fork del repositorio.
+2. Crea una rama para tu funcionalidad o corrección (`git checkout -b feature/nueva-funcionalidad`).
+3. Realiza tus cambios y haz commit (`git commit -m "Agrega nueva funcionalidad"`).
+4. Sube tus cambios (`git push origin feature/nueva-funcionalidad`).
+5. Abre un Pull Request.
+
+## Licencia
+
+Este proyecto está licenciado bajo la [Licencia MIT](LICENSE.txt). Puedes usarlo, modificarlo y distribuirlo libremente.
