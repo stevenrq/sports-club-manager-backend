@@ -16,17 +16,17 @@ import com.sportsclubmanager.backend.member.model.Coach;
 import com.sportsclubmanager.backend.user.dto.UserResponse;
 import com.sportsclubmanager.backend.user.dto.UserUpdateRequest;
 import com.sportsclubmanager.backend.user.mapper.UserMapper;
-import com.sportsclubmanager.backend.user.service.BaseUserService;
+import com.sportsclubmanager.backend.user.service.UserService;
 
 @RestController
 @RequestMapping("/api/coaches")
 public class CoachController {
 
-    private final BaseUserService<Coach> coachService;
+    private final UserService<Coach> coachService;
 
     private final UserMapper userMapper;
 
-    public CoachController(@Qualifier("coachService") BaseUserService<Coach> coachService, UserMapper userMapper) {
+    public CoachController(@Qualifier("coachService") UserService<Coach> coachService, UserMapper userMapper) {
         this.coachService = coachService;
         this.userMapper = userMapper;
     }

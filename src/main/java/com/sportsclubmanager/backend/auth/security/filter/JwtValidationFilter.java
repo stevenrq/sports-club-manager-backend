@@ -1,7 +1,8 @@
-package com.sportsclubmanager.backend.security.filter;
+package com.sportsclubmanager.backend.auth.security.filter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.sportsclubmanager.backend.security.SimpleGrantedAuthorityJsonCreator;
+import com.sportsclubmanager.backend.auth.security.SimpleGrantedAuthorityJsonCreator;
+
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import jakarta.servlet.FilterChain;
@@ -15,13 +16,13 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 
+import static com.sportsclubmanager.backend.auth.security.JwtConfig.*;
+
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-
-import static com.sportsclubmanager.backend.security.JwtConfig.*;
 
 public class JwtValidationFilter extends BasicAuthenticationFilter {
 

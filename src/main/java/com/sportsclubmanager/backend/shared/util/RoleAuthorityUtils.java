@@ -1,4 +1,4 @@
-package com.sportsclubmanager.backend.util;
+package com.sportsclubmanager.backend.shared.util;
 
 import java.util.HashSet;
 import java.util.NoSuchElementException;
@@ -8,11 +8,11 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import com.sportsclubmanager.backend.exception.RoleRetrievalException;
 import com.sportsclubmanager.backend.member.model.ClubAdministrator;
 import com.sportsclubmanager.backend.member.model.Coach;
 import com.sportsclubmanager.backend.member.model.Player;
 import com.sportsclubmanager.backend.user.dto.UserUpdateRequest;
+import com.sportsclubmanager.backend.user.exception.RoleRetrievalException;
 import com.sportsclubmanager.backend.user.model.Authority;
 import com.sportsclubmanager.backend.user.model.Role;
 import com.sportsclubmanager.backend.user.model.User;

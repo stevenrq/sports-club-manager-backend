@@ -1,4 +1,4 @@
-package com.sportsclubmanager.backend.exception;
+package com.sportsclubmanager.backend.user.exception;
 
 public class RoleRetrievalException extends RuntimeException {
 

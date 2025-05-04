@@ -16,7 +16,7 @@ import java.util.Optional;
  *
  * @param <T> el tipo de la entidad de usuario
  */
-public interface BaseUserService<T> {
+public interface UserService<T> {
     T save(T t);
 
     Optional<T> findById(Long id);

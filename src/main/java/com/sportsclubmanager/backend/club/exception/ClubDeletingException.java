@@ -1,4 +1,4 @@
-package com.sportsclubmanager.backend.exception;
+package com.sportsclubmanager.backend.club.exception;
 
 public class ClubDeletingException extends RuntimeException {
 

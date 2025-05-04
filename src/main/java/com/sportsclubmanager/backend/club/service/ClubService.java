@@ -9,7 +9,7 @@ import org.springframework.data.domain.Pageable;
 import com.sportsclubmanager.backend.club.dto.ClubUpdateRequest;
 import com.sportsclubmanager.backend.club.model.Club;
 
-public interface BaseClubService {
+public interface ClubService {
 
     Club save(Club club, Long clubAdminId);
 

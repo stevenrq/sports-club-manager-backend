@@ -1,7 +1,7 @@
 package com.sportsclubmanager.backend.user.dto;
 
+import com.sportsclubmanager.backend.shared.util.RoleAuthorityUtils;
 import com.sportsclubmanager.backend.user.model.Role;
-import com.sportsclubmanager.backend.util.RoleAuthorityUtils;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Transient;

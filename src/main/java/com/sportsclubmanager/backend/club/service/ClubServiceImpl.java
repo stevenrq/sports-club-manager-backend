@@ -3,25 +3,25 @@ package com.sportsclubmanager.backend.club.service;
 import java.util.List;
 import java.util.Optional;
 
-import com.sportsclubmanager.backend.exception.ClubDeletingException;
 import com.sportsclubmanager.backend.member.model.ClubAdministrator;
 import com.sportsclubmanager.backend.member.service.ClubAdministratorService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import com.sportsclubmanager.backend.club.dto.ClubUpdateRequest;
+import com.sportsclubmanager.backend.club.exception.ClubDeletingException;
 import com.sportsclubmanager.backend.club.model.Club;
 import com.sportsclubmanager.backend.club.repository.ClubRepository;
 import org.springframework.stereotype.Service;
 
 @Service
-public class DefaultClubService implements BaseClubService {
+public class ClubServiceImpl implements ClubService {
 
     private final ClubAdministratorService clubAdministratorService;
 
     private final ClubRepository clubRepository;
 
-    public DefaultClubService(ClubRepository clubRepository, ClubAdministratorService clubAdministratorService) {
+    public ClubServiceImpl(ClubRepository clubRepository, ClubAdministratorService clubAdministratorService) {
         this.clubRepository = clubRepository;
         this.clubAdministratorService = clubAdministratorService;
     }

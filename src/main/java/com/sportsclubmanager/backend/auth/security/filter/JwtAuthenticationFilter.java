@@ -1,4 +1,4 @@
-package com.sportsclubmanager.backend.security.filter;
+package com.sportsclubmanager.backend.auth.security.filter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sportsclubmanager.backend.user.model.User;
@@ -18,13 +18,13 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import static com.sportsclubmanager.backend.auth.security.JwtConfig.*;
+
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-
-import static com.sportsclubmanager.backend.security.JwtConfig.*;
 
 public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 

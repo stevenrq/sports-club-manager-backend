@@ -4,7 +4,7 @@ import com.sportsclubmanager.backend.club.dto.ClubResponse;
 import com.sportsclubmanager.backend.club.dto.ClubUpdateRequest;
 import com.sportsclubmanager.backend.club.mapper.ClubMapper;
 import com.sportsclubmanager.backend.club.model.Club;
-import com.sportsclubmanager.backend.club.service.BaseClubService;
+import com.sportsclubmanager.backend.club.service.ClubService;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -19,11 +19,11 @@ import java.util.Optional;
 @RequestMapping("/api/clubs")
 public class ClubController {
 
-    private final BaseClubService clubService;
+    private final ClubService clubService;
 
     private final ClubMapper clubMapper;
 
-    public ClubController(@Qualifier("defaultClubService") BaseClubService clubService, ClubMapper clubMapper) {
+    public ClubController(@Qualifier("clubServiceImpl") ClubService clubService, ClubMapper clubMapper) {
         this.clubService = clubService;
         this.clubMapper = clubMapper;
     }

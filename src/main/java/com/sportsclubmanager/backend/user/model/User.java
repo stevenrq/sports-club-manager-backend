@@ -1,7 +1,5 @@
 package com.sportsclubmanager.backend.user.model;
 
-import com.sportsclubmanager.backend.util.RoleAuthorityUtils;
-
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -9,6 +7,8 @@ import java.io.Serial;
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
+
+import com.sportsclubmanager.backend.shared.util.RoleAuthorityUtils;
 
 @Data
 @Entity

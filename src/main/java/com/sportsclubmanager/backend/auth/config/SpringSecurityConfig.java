@@ -1,7 +1,5 @@
-package com.sportsclubmanager.backend.configuration;
+package com.sportsclubmanager.backend.auth.config;
 
-import com.sportsclubmanager.backend.security.filter.JwtAuthenticationFilter;
-import com.sportsclubmanager.backend.security.filter.JwtValidationFilter;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -20,6 +18,9 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
+
+import com.sportsclubmanager.backend.auth.security.filter.JwtAuthenticationFilter;
+import com.sportsclubmanager.backend.auth.security.filter.JwtValidationFilter;
 
 import java.util.Arrays;
 import java.util.List;
@@ -66,7 +67,6 @@ public class SpringSecurityConfig {
     @Bean
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
-        // TODO: Se deben utilizar sólo orígenes específicos en producción
         config.setAllowedOriginPatterns(List.of("*"));
         config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
         config.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type"));

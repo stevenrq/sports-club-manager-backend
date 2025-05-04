@@ -12,13 +12,13 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.sportsclubmanager.backend.member.model.ClubAdministrator;
 import com.sportsclubmanager.backend.member.repository.ClubAdministratorRepository;
+import com.sportsclubmanager.backend.shared.util.RoleAuthorityUtils;
 import com.sportsclubmanager.backend.user.dto.UserUpdateRequest;
 import com.sportsclubmanager.backend.user.repository.RoleRepository;
-import com.sportsclubmanager.backend.user.service.BaseUserService;
-import com.sportsclubmanager.backend.util.RoleAuthorityUtils;
+import com.sportsclubmanager.backend.user.service.UserService;
 
 @Service
-public class ClubAdministratorService implements BaseUserService<ClubAdministrator> {
+public class ClubAdministratorService implements UserService<ClubAdministrator> {
 
     private final ClubAdministratorRepository clubAdministratorRepository;
     private final RoleRepository roleRepository;

@@ -1,4 +1,4 @@
-package com.sportsclubmanager.backend.security;
+package com.sportsclubmanager.backend.auth.security;
 
 import io.jsonwebtoken.Jwts;
 
