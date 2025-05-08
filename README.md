@@ -33,6 +33,11 @@ Desarrollar e implementar **Sports Club Manager**, una plataforma que facilite l
 - Aumentar la participación en la comunidad ajedrecística.
 - Mejorar la visibilidad de actividades y torneos.
 
+## Documentación (Inglés)
+Aquí podrás encontrar la documentación del proyecto gracias a Devin.
+
+[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/Stevenrq/sports-club-manager-backend)
+
 ## Cómo Empezar
 
 1. **Clonar el Repositorio**:
