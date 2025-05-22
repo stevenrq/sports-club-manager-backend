@@ -68,7 +68,7 @@ public class ClubController {
     @PutMapping("/{id}")
     @PreAuthorize("hasAnyRole('CLUB_ADMIN', 'ADMIN')")
     public ResponseEntity<ClubResponse> update(@PathVariable Long id,
-                                               @RequestBody ClubUpdateRequest clubUpdateRequest) {
+            @RequestBody ClubUpdateRequest clubUpdateRequest) {
 
         return clubService.update(id, clubUpdateRequest)
                 .map(club -> ResponseEntity.ok(clubMapper.toClubResponse(club)))

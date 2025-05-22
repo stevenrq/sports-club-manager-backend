@@ -76,7 +76,7 @@ public class UserServiceImpl implements UserService<User> {
             userUpdated.setPhoneNumber(userUpdateRequest.getPhoneNumber());
             userUpdated.setEmail(userUpdateRequest.getEmail());
             userUpdated.setUsername(userUpdateRequest.getUsername());
-            userUpdated.setRoles(RoleAuthorityUtils.getRolesFromUpdateRequest(userUpdateRequest, roleRepository));
+            userUpdated.setRoles(RoleAuthorityUtils.getRoles(userUpdated, roleRepository));
 
             return Optional.of(userRepository.save(userUpdated));
         }

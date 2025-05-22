@@ -91,7 +91,8 @@ public class CoachController {
 
     @PatchMapping("/change-affiliation-status/{id}")
     @PreAuthorize("hasAnyRole('CLUB_ADMIN', 'ADMIN')")
-    public ResponseEntity<Void> updateAffiliationStatus(@PathVariable Long id, @RequestBody AffiliationStatus affiliationStatus) {
+    public ResponseEntity<Void> updateAffiliationStatus(@PathVariable Long id,
+            @RequestBody AffiliationStatus affiliationStatus) {
         boolean updated = coachService.updateAffiliationStatus(id, affiliationStatus);
         if (updated) {
             return ResponseEntity.ok().build();

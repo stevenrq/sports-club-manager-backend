@@ -5,7 +5,6 @@ import com.sportsclubmanager.backend.user.model.Role;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Transient;
-import jakarta.validation.constraints.NotEmpty;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -39,7 +38,6 @@ public class UserUpdateRequest {
     @Transient
     private boolean admin;
 
-    @NotEmpty
     private Set<Role> roles;
 
     public Set<String> getRolesAndAuthorities() {

@@ -71,7 +71,7 @@ public class UserController {
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<UserResponse> update(@PathVariable Long id,
-                                               @RequestBody UserUpdateRequest userUpdateRequest) {
+            @RequestBody UserUpdateRequest userUpdateRequest) {
 
         return userService.update(id, userUpdateRequest)
                 .map(user -> ResponseEntity.ok(userMapper.toUserResponse(user)))
@@ -92,7 +92,8 @@ public class UserController {
 
     @PatchMapping("/change-affiliation-status/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<Void> updateAffiliationStatus(@PathVariable Long id, @RequestBody AffiliationStatus affiliationStatus) {
+    public ResponseEntity<Void> updateAffiliationStatus(@PathVariable Long id,
+            @RequestBody AffiliationStatus affiliationStatus) {
         boolean updated = userService.updateAffiliationStatus(id, affiliationStatus);
         if (updated) {
             return ResponseEntity.ok().build();

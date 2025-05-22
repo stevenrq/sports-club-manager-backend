@@ -77,7 +77,7 @@ public class CoachService implements UserService<Coach> {
             coachUpdated.setPhoneNumber(userUpdateRequest.getPhoneNumber());
             coachUpdated.setEmail(userUpdateRequest.getEmail());
             coachUpdated.setUsername(userUpdateRequest.getUsername());
-            coachUpdated.setRoles(RoleAuthorityUtils.getRolesFromUpdateRequest(userUpdateRequest, roleRepository));
+            coachUpdated.setRoles(RoleAuthorityUtils.getRoles(userUpdateRequest, roleRepository));
 
             return Optional.of(coachRepository.save(coachUpdated));
         }
