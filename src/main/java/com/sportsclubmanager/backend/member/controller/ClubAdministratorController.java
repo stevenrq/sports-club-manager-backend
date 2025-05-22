@@ -1,7 +1,11 @@
 package com.sportsclubmanager.backend.member.controller;
 
+import com.sportsclubmanager.backend.user.dto.ApiResponse;
 import com.sportsclubmanager.backend.user.model.AffiliationStatus;
+import com.sportsclubmanager.backend.shared.validation.UserValidationService;
+import jakarta.validation.Valid;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import com.sportsclubmanager.backend.member.model.ClubAdministrator;
@@ -24,19 +28,28 @@ import org.springframework.http.ResponseEntity;
 public class ClubAdministratorController {
 
     private final UserService<ClubAdministrator> clubAdministratorService;
+    private final UserValidationService userValidationService;
 
     private final UserMapper userMapper;
 
-    public ClubAdministratorController(
-            @Qualifier("clubAdministratorService") UserService<ClubAdministrator> clubAdministratorService,
-            UserMapper userMapper) {
+    public ClubAdministratorController(@Qualifier("clubAdministratorService") UserService<ClubAdministrator> clubAdministratorService,
+                                       UserValidationService userValidationService, UserMapper userMapper) {
         this.clubAdministratorService = clubAdministratorService;
+        this.userValidationService = userValidationService;
         this.userMapper = userMapper;
     }
 
     @PostMapping
-    public ResponseEntity<ClubAdministrator> create(@RequestBody ClubAdministrator clubAdministrator) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(clubAdministratorService.save(clubAdministrator));
+    public ResponseEntity<ApiResponse<UserResponse>> create(@Valid @RequestBody ClubAdministrator clubAdministrator, BindingResult bindingResult) {
+        ResponseEntity<ApiResponse<UserResponse>> validationResult =
+                userValidationService.handleValidation(clubAdministrator, bindingResult);
+        if (validationResult != null) return validationResult;
+
+        ClubAdministrator savedClubAdmin = clubAdministratorService.save(clubAdministrator);
+        UserResponse response = userMapper.toUserResponse(savedClubAdmin);
+        ApiResponse<UserResponse> apiResponse = new ApiResponse<>(response);
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(apiResponse);
     }
 
     @GetMapping("/{id}")
@@ -72,11 +85,21 @@ public class ClubAdministratorController {
 
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<UserResponse> update(@PathVariable Long id,
-            @RequestBody UserUpdateRequest userUpdateRequest) {
+    public ResponseEntity<ApiResponse<UserResponse>> update(
+            @PathVariable Long id,
+            @Valid @RequestBody UserUpdateRequest userUpdateRequest,
+            BindingResult bindingResult) {
+
+        ResponseEntity<ApiResponse<UserResponse>> validationResult =
+                userValidationService.handleValidation(userUpdateRequest, bindingResult);
+        if (validationResult != null) return validationResult;
 
         return clubAdministratorService.update(id, userUpdateRequest)
-                .map(user -> ResponseEntity.ok(userMapper.toUserResponse(user)))
+                .map(user -> {
+                    UserResponse response = userMapper.toUserResponse(user);
+                    ApiResponse<UserResponse> apiResponse = new ApiResponse<>(response);
+                    return ResponseEntity.ok(apiResponse);
+                })
                 .orElse(ResponseEntity.notFound().build());
     }
 
@@ -95,7 +118,7 @@ public class ClubAdministratorController {
     @PatchMapping("/change-affiliation-status/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> updateAffiliationStatus(@PathVariable Long id,
-            @RequestBody AffiliationStatus affiliationStatus) {
+                                                        @RequestBody AffiliationStatus affiliationStatus) {
 
         boolean affiliationStatusUpdated = clubAdministratorService.updateAffiliationStatus(id, affiliationStatus);
         if (affiliationStatusUpdated) {

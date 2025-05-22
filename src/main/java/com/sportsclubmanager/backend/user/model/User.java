@@ -1,6 +1,12 @@
 package com.sportsclubmanager.backend.user.model;
 
+import com.sportsclubmanager.backend.user.validation.annotation.NoSpecialCharacters;
+import com.sportsclubmanager.backend.user.validation.annotation.PasswordStrength;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.Data;
 
 import java.io.Serial;
@@ -23,25 +29,43 @@ public class User implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "national_id", nullable = false)
+    @NotNull
+    @Column(name = "national_id", nullable = false, unique = true, length = 10)
     private Long nationalId;
 
-    @Column(name = "name", nullable = false)
+    @NotBlank
+    @Size(min = 3, max = 20)
+    @Column(nullable = false, length = 20)
     private String name;
 
-    @Column(name = "last_name", nullable = false)
+    @NotBlank
+    @Size(min = 3, max = 20)
+    @Column(name = "last_name", nullable = false, length = 20)
     private String lastName;
 
-    @Column(name = "phone_number", unique = true, nullable = false)
+    @NotNull
+    @Column(name = "phone_number", unique = true, nullable = false, length = 10)
     private Long phoneNumber;
 
-    @Column(unique = true, nullable = false)
+    @NotBlank
+    @Email
+    @Size(min = 16, max = 40)
+    @Column(unique = true, nullable = false, length = 40)
     private String email;
 
-    @Column(unique = true, nullable = false)
+    @NotBlank
+    @NoSpecialCharacters
+    @Size(min = 6, max = 20)
+    @Column(unique = true, nullable = false, length = 20)
     private String username;
 
-    @Column(nullable = false)
+    /**
+     * Se utiliza una longitud de 60 porque BCrypt generará una cadena de longitud 60
+     */
+    @NotBlank
+    @PasswordStrength
+    @Size(min = 6, max = 60)
+    @Column(nullable = false, length = 60)
     private String password;
 
     @Column(nullable = false)
@@ -59,8 +83,8 @@ public class User implements Serializable {
     @Transient
     private boolean admin;
 
-    @ManyToMany(fetch = FetchType.EAGER, cascade = { CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST,
-            CascadeType.REFRESH })
+    @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST,
+            CascadeType.REFRESH})
     @JoinTable(name = "users_roles", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> roles = new HashSet<>();
 

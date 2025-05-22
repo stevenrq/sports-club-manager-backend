@@ -3,8 +3,13 @@ package com.sportsclubmanager.backend.user.dto;
 import com.sportsclubmanager.backend.shared.util.RoleAuthorityUtils;
 import com.sportsclubmanager.backend.user.model.Role;
 
+import com.sportsclubmanager.backend.user.validation.annotation.NoSpecialCharacters;
 import jakarta.persistence.Column;
 import jakarta.persistence.Transient;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -20,19 +25,30 @@ import java.util.Set;
 @ToString
 public class UserUpdateRequest {
 
-    @Column(nullable = false)
+    @NotBlank
+    @Size(min = 3, max = 20)
+    @Column(nullable = false, length = 20)
     private String name;
 
-    @Column(name = "last_name", nullable = false)
+    @NotBlank
+    @Size(min = 3, max = 20)
+    @Column(name = "last_name", nullable = false, length = 20)
     private String lastName;
 
-    @Column(name = "phone_number", nullable = false, unique = true)
+    @NotNull
+    @Column(name = "phone_number", unique = true, nullable = false, length = 10)
     private Long phoneNumber;
 
-    @Column(nullable = false, unique = true)
+    @NotBlank
+    @Email
+    @Size(min = 16, max = 40)
+    @Column(unique = true, nullable = false, length = 40)
     private String email;
 
-    @Column(nullable = false, unique = true)
+    @NotBlank
+    @NoSpecialCharacters
+    @Size(min = 6, max = 20)
+    @Column(unique = true, nullable = false, length = 20)
     private String username;
 
     @Transient

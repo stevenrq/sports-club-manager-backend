@@ -72,7 +72,7 @@ public class PlayerService implements UserService<Player> {
             playerUpdated.setPhoneNumber(userUpdateRequest.getPhoneNumber());
             playerUpdated.setEmail(userUpdateRequest.getEmail());
             playerUpdated.setUsername(userUpdateRequest.getUsername());
-            playerUpdated.setRoles(RoleAuthorityUtils.getRoles(userUpdateRequest, roleRepository));
+            playerUpdated.setRoles(RoleAuthorityUtils.getRoles(playerUpdated, roleRepository));
 
             return Optional.of(playerRepository.save(playerUpdated));
         }

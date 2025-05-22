@@ -78,7 +78,7 @@ public class ClubAdministratorService implements UserService<ClubAdministrator> 
             clubAdminUpdated.setPhoneNumber(userUpdateRequest.getPhoneNumber());
             clubAdminUpdated.setEmail(userUpdateRequest.getEmail());
             clubAdminUpdated.setUsername(userUpdateRequest.getUsername());
-            clubAdminUpdated.setRoles(RoleAuthorityUtils.getRoles(userUpdateRequest, roleRepository));
+            clubAdminUpdated.setRoles(RoleAuthorityUtils.getRoles(clubAdminUpdated, roleRepository));
 
             return Optional.of(clubAdministratorRepository.save(clubAdminUpdated));
         }

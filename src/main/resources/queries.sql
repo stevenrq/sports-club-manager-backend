@@ -26,17 +26,17 @@ from clubs
 group by clubs.name;
 
 -- Obtiene el club asociado a cada usuario según su rol
-select u.name         as user_name,
-       u.email        as user_email,
-       r.name         as role_name,
-       c.name         as club_name,
-       c.address      as club_address,
-       c.phone_number as club_phone_number
+select distinct u.name         as user_name,
+                u.email        as user_email,
+                r.name         as role_name,
+                c.name         as club_name,
+                c.address      as club_address,
+                c.phone_number as club_phone_number
 from users u
          join users_roles ur on u.id = ur.user_id
          join roles r on ur.role_id = r.id
          left join club_administrators ca on u.id = ca.id
          left join coaches co on u.id = co.id
          left join players p on u.id = p.id
-         left join clubs c on c.id  = co.club_id or c.id = p.club_id
+         left join clubs c on c.id = co.club_id or c.id = p.club_id or c.id = ca.club_id
 order by r.name, u.name;

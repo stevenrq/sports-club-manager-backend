@@ -3,13 +3,17 @@ package com.sportsclubmanager.backend.member.controller;
 import java.util.List;
 import java.util.Optional;
 
+import com.sportsclubmanager.backend.shared.validation.UserValidationService;
+import com.sportsclubmanager.backend.user.dto.ApiResponse;
 import com.sportsclubmanager.backend.user.model.AffiliationStatus;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import com.sportsclubmanager.backend.member.model.Coach;
@@ -23,17 +27,28 @@ import com.sportsclubmanager.backend.user.service.UserService;
 public class CoachController {
 
     private final UserService<Coach> coachService;
+    private final UserValidationService userValidationService;
 
     private final UserMapper userMapper;
 
-    public CoachController(@Qualifier("coachService") UserService<Coach> coachService, UserMapper userMapper) {
+    public CoachController(@Qualifier("coachService") UserService<Coach> coachService, UserValidationService userValidationService,
+                           UserMapper userMapper) {
         this.coachService = coachService;
+        this.userValidationService = userValidationService;
         this.userMapper = userMapper;
     }
 
     @PostMapping
-    public ResponseEntity<Coach> create(@RequestBody Coach coach) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(coachService.save(coach));
+    public ResponseEntity<ApiResponse<UserResponse>> create(@Valid @RequestBody Coach coach, BindingResult bindingResult) {
+        ResponseEntity<ApiResponse<UserResponse>> validationResult =
+                userValidationService.handleValidation(coach, bindingResult);
+        if (validationResult != null) return validationResult;
+
+        Coach savedCoach = coachService.save(coach);
+        UserResponse response = userMapper.toUserResponse(savedCoach);
+        ApiResponse<UserResponse> apiResponse = new ApiResponse<>(response);
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(apiResponse);
     }
 
     @GetMapping("/{id}")
@@ -69,11 +84,21 @@ public class CoachController {
 
     @PutMapping("/{id}")
     @PreAuthorize("hasAnyRole('CLUB_ADMIN', 'COACH', 'ADMIN')")
-    public ResponseEntity<UserResponse> update(@PathVariable Long id,
-            @RequestBody UserUpdateRequest userUpdateRequest) {
+    public ResponseEntity<ApiResponse<UserResponse>> update(
+            @PathVariable Long id,
+            @Valid @RequestBody UserUpdateRequest userUpdateRequest,
+            BindingResult bindingResult) {
+
+        ResponseEntity<ApiResponse<UserResponse>> validationResult =
+                userValidationService.handleValidation(userUpdateRequest, bindingResult);
+        if (validationResult != null) return validationResult;
 
         return coachService.update(id, userUpdateRequest)
-                .map(user -> ResponseEntity.ok(userMapper.toUserResponse(user)))
+                .map(user -> {
+                    UserResponse response = userMapper.toUserResponse(user);
+                    ApiResponse<UserResponse> apiResponse = new ApiResponse<>(response);
+                    return ResponseEntity.ok(apiResponse);
+                })
                 .orElse(ResponseEntity.notFound().build());
     }
 
@@ -92,7 +117,7 @@ public class CoachController {
     @PatchMapping("/change-affiliation-status/{id}")
     @PreAuthorize("hasAnyRole('CLUB_ADMIN', 'ADMIN')")
     public ResponseEntity<Void> updateAffiliationStatus(@PathVariable Long id,
-            @RequestBody AffiliationStatus affiliationStatus) {
+                                                        @RequestBody AffiliationStatus affiliationStatus) {
         boolean updated = coachService.updateAffiliationStatus(id, affiliationStatus);
         if (updated) {
             return ResponseEntity.ok().build();

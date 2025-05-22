@@ -1,12 +1,16 @@
 package com.sportsclubmanager.backend.user.controller;
 
+import com.sportsclubmanager.backend.user.dto.ApiResponse;
 import com.sportsclubmanager.backend.user.model.AffiliationStatus;
+import com.sportsclubmanager.backend.shared.validation.UserValidationService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import com.sportsclubmanager.backend.user.dto.UserResponse;
@@ -23,17 +27,30 @@ import java.util.Optional;
 public class UserController {
 
     private final UserService<User> userService;
+    private final UserValidationService userValidationService;
 
     private final UserMapper userMapper;
 
-    public UserController(@Qualifier("userServiceImpl") UserService<User> userService, UserMapper userMapper) {
+    public UserController(
+            @Qualifier("userServiceImpl") UserService<User> userService,
+            UserValidationService userValidationService,
+            UserMapper userMapper) {
         this.userService = userService;
+        this.userValidationService = userValidationService;
         this.userMapper = userMapper;
     }
 
     @PostMapping
-    public ResponseEntity<User> create(@RequestBody User user) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(userService.save(user));
+    public ResponseEntity<ApiResponse<UserResponse>> create(@Valid @RequestBody User user, BindingResult bindingResult) {
+        ResponseEntity<ApiResponse<UserResponse>> validationResult =
+                userValidationService.handleValidation(user, bindingResult);
+        if (validationResult != null) return validationResult;
+
+        User savedUser = userService.save(user);
+        UserResponse response = userMapper.toUserResponse(savedUser);
+        ApiResponse<UserResponse> apiResponse = new ApiResponse<>(response);
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(apiResponse);
     }
 
     @GetMapping("/{id}")
@@ -70,11 +87,21 @@ public class UserController {
 
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<UserResponse> update(@PathVariable Long id,
-            @RequestBody UserUpdateRequest userUpdateRequest) {
+    public ResponseEntity<ApiResponse<UserResponse>> update(
+            @PathVariable Long id,
+            @Valid @RequestBody UserUpdateRequest userUpdateRequest,
+            BindingResult bindingResult) {
+
+        ResponseEntity<ApiResponse<UserResponse>> validationResult =
+                userValidationService.handleValidation(userUpdateRequest, bindingResult);
+        if (validationResult != null) return validationResult;
 
         return userService.update(id, userUpdateRequest)
-                .map(user -> ResponseEntity.ok(userMapper.toUserResponse(user)))
+                .map(user -> {
+                    UserResponse response = userMapper.toUserResponse(user);
+                    ApiResponse<UserResponse> apiResponse = new ApiResponse<>(response);
+                    return ResponseEntity.ok(apiResponse);
+                })
                 .orElse(ResponseEntity.notFound().build());
     }
 
@@ -93,7 +120,7 @@ public class UserController {
     @PatchMapping("/change-affiliation-status/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> updateAffiliationStatus(@PathVariable Long id,
-            @RequestBody AffiliationStatus affiliationStatus) {
+                                                        @RequestBody AffiliationStatus affiliationStatus) {
         boolean updated = userService.updateAffiliationStatus(id, affiliationStatus);
         if (updated) {
             return ResponseEntity.ok().build();

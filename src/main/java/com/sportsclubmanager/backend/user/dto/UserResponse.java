@@ -16,6 +16,7 @@ import lombok.NoArgsConstructor;
 public class UserResponse {
 
     private Long id;
+    private Long nationalId;
     private String name;
     private String lastName;
     private Long phoneNumber;
