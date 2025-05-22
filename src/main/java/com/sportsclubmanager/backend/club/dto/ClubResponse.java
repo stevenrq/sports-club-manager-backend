@@ -16,7 +16,7 @@ public class ClubResponse {
 
     private String address;
 
-    private String phoneNumber;
+    private Long phoneNumber;
 
     private boolean enabled;
 

@@ -14,5 +14,5 @@ public class ClubUpdateRequest {
     private String address;
 
     @Column(name = "phone_number", unique = true)
-    private String phoneNumber;
+    private Long phoneNumber;
 }

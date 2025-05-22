@@ -30,7 +30,7 @@ public class Club {
     private String address;
 
     @Column(name = "phone_number", unique = true, nullable = false)
-    private String phoneNumber;
+    private Long phoneNumber;
 
     @Column(nullable = false)
     private boolean enabled;

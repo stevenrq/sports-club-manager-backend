@@ -27,7 +27,7 @@ public class UserUpdateRequest {
     private String lastName;
 
     @Column(name = "phone_number", nullable = false, unique = true)
-    private String phoneNumber;
+    private Long phoneNumber;
 
     @Column(nullable = false, unique = true)
     private String email;

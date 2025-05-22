@@ -23,6 +23,9 @@ public class User implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "national_id", nullable = false)
+    private Long nationalId;
+
     @Column(name = "name", nullable = false)
     private String name;
 
@@ -30,7 +33,7 @@ public class User implements Serializable {
     private String lastName;
 
     @Column(name = "phone_number", unique = true, nullable = false)
-    private String phoneNumber;
+    private Long phoneNumber;
 
     @Column(unique = true, nullable = false)
     private String email;
@@ -56,8 +59,8 @@ public class User implements Serializable {
     @Transient
     private boolean admin;
 
-    @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST,
-            CascadeType.REFRESH})
+    @ManyToMany(fetch = FetchType.EAGER, cascade = { CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST,
+            CascadeType.REFRESH })
     @JoinTable(name = "users_roles", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> roles = new HashSet<>();
 
