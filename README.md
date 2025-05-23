@@ -34,16 +34,17 @@ Desarrollar e implementar **Sports Club Manager**, una plataforma que facilite l
 - Mejorar la visibilidad de actividades y torneos.
 
 ## Documentación (Inglés)
+
 Aquí podrás encontrar la documentación del proyecto gracias a Devin.
 
-[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/Stevenrq/sports-club-manager-backend)
+[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/stevenrq/sports-club-manager-backend)
 
 ## Cómo Empezar
 
 1. **Clonar el Repositorio**:
 
    ```bash
-   git clone https://github.com/Stevenrq/sports-club-manager-backend.git
+   git clone https://github.com/stevenrq/sports-club-manager-backend.git
    ```
 
 2. **Configurar la Base de Datos**: Actualiza los detalles de conexión en `src/main/resources/application.properties`:
