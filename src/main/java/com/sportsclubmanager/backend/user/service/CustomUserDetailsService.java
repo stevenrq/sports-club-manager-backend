@@ -15,6 +15,10 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+/**
+ * Servicio personalizado que implementa UserDetailsService de Spring Security para
+ * cargar los detalles del usuario durante la autenticación.
+ */
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
 
@@ -24,6 +28,13 @@ public class CustomUserDetailsService implements UserDetailsService {
         this.userRepository = userRepository;
     }
 
+    /**
+     * Carga los detalles del usuario para la autenticación de Spring Security.
+     *
+     * @param username nombre de usuario a buscar
+     * @return objeto UserDetails con la información del usuario para autenticación
+     * @throws UsernameNotFoundException si el usuario no es encontrado
+     */
     @Override
     @Transactional(readOnly = true)
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {

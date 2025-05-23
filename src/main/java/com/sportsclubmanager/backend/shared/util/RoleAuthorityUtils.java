@@ -40,17 +40,17 @@ public class RoleAuthorityUtils {
      * @param roles El conjunto de roles del cual se extraerán los nombres de los
      *              roles y autoridades. No debe ser nulo.
      * @return Un conjunto de cadenas que representan los nombres de los roles y
-     *         autoridades.
+     * autoridades.
      * @throws NullPointerException Si el conjunto de roles proporcionado es nulo.
      */
     public static Set<String> getRolesAndAuthorities(Set<Role> roles) {
-        Objects.requireNonNull(roles, "The roles set must not be null");
+        Objects.requireNonNull(roles, "The role set must not be null.");
 
         return Stream.concat(
-                roles.stream().map(Role::getName),
-                roles.stream()
-                        .flatMap(role -> role.getAuthorities().stream())
-                        .map(Authority::getName))
+                        roles.stream().map(Role::getName),
+                        roles.stream()
+                                .flatMap(role -> role.getAuthorities().stream())
+                                .map(Authority::getName))
                 .collect(Collectors.toSet());
     }
 
@@ -62,10 +62,9 @@ public class RoleAuthorityUtils {
      *                       solicitud de actualización de usuario (instancia de
      *                       {@link UserUpdateRequest}). No debe ser nulo.
      * @param roleRepository El repositorio para acceder a la información de los
-     *                       roles.
-     *                       No debe ser nulo.
+     *                       roles. No debe ser nulo.
      * @return Un conjunto de objetos {@link Role} asociados al usuario o a la
-     *         solicitud de actualización.
+     * solicitud de actualización.
      * @throws RoleRetrievalException Si ocurre un error al recuperar los roles.
      */
     public static Set<Role> getRoles(Object user, RoleRepository roleRepository) {
@@ -85,8 +84,7 @@ public class RoleAuthorityUtils {
      * @param user           El objeto de usuario del cual se extraerán los roles.
      *                       No debe ser nulo.
      * @param roleRepository El repositorio para acceder a la información de los
-     *                       roles.
-     *                       No debe ser nulo.
+     *                       roles. No debe ser nulo.
      * @return Un conjunto de objetos {@link Role} asociados al usuario.
      * @throws RoleRetrievalException Si ocurre un error al recuperar los roles
      *                                debido a la no existencia de un rol, un
@@ -132,7 +130,7 @@ public class RoleAuthorityUtils {
      * @param roleRepository    El repositorio para acceder a la información de los
      *                          roles. No debe ser nulo.
      * @return Un conjunto de objetos {@link Role} especificados en la solicitud de
-     *         actualización.
+     * actualización.
      * @throws RoleRetrievalException Si ocurre un error al recuperar los roles
      *                                debido a la no existencia de un rol o un
      *                                error inesperado.
@@ -140,7 +138,7 @@ public class RoleAuthorityUtils {
      *                                actualización está vacío.
      */
     private static Set<Role> getRolesFromUserUpdateRequest(UserUpdateRequest userUpdateRequest,
-            RoleRepository roleRepository) {
+                                                           RoleRepository roleRepository) {
 
         Set<Role> roles = new HashSet<>();
 
@@ -153,7 +151,7 @@ public class RoleAuthorityUtils {
                     roleOptional.ifPresent(roles::add);
                 }
             } else {
-                throw new NullPointerException("The user roles must be not null");
+                throw new NullPointerException("User roles must not be null");
             }
         } catch (NoSuchElementException e) {
             throw new RoleRetrievalException("Error retrieving roles", e);
