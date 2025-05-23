@@ -117,7 +117,7 @@ public class UserController {
         return ResponseEntity.notFound().build();
     }
 
-    @PatchMapping("/change-affiliation-status/{id}")
+    @PatchMapping("/{id}/affiliation-status")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> updateAffiliationStatus(@PathVariable Long id,
                                                         @RequestBody AffiliationStatus affiliationStatus) {

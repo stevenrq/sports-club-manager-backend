@@ -4,14 +4,22 @@ import java.util.List;
 import java.util.Optional;
 
 import com.sportsclubmanager.backend.user.model.AffiliationStatus;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.sportsclubmanager.backend.club.model.Club;
+import com.sportsclubmanager.backend.club.repository.ClubRepository;
 import com.sportsclubmanager.backend.member.model.ClubAdministrator;
+import com.sportsclubmanager.backend.member.model.Player;
 import com.sportsclubmanager.backend.member.repository.ClubAdministratorRepository;
+import com.sportsclubmanager.backend.member.repository.PlayerRepository;
+import com.sportsclubmanager.backend.shared.exception.ClubAlreadyHasPlayerException;
+import com.sportsclubmanager.backend.shared.exception.PlayerAlreadyHasClubException;
+import com.sportsclubmanager.backend.shared.exception.ResourceNotFoundException;
 import com.sportsclubmanager.backend.shared.util.RoleAuthorityUtils;
 import com.sportsclubmanager.backend.user.dto.UserUpdateRequest;
 import com.sportsclubmanager.backend.user.repository.RoleRepository;
@@ -22,13 +30,21 @@ public class ClubAdministratorService implements UserService<ClubAdministrator> 
 
     private final ClubAdministratorRepository clubAdministratorRepository;
     private final RoleRepository roleRepository;
+    private final ClubRepository clubRepository;
+    private final PlayerRepository playerRepository;
 
     private final PasswordEncoder passwordEncoder;
 
-    public ClubAdministratorService(ClubAdministratorRepository clubAdministratorRepository,
-                                    RoleRepository roleRepository, PasswordEncoder passwordEncoder) {
+    public ClubAdministratorService(
+            ClubAdministratorRepository clubAdministratorRepository,
+            RoleRepository roleRepository,
+            ClubRepository clubRepository,
+            PlayerRepository playerRepository,
+            PasswordEncoder passwordEncoder) {
         this.clubAdministratorRepository = clubAdministratorRepository;
         this.roleRepository = roleRepository;
+        this.clubRepository = clubRepository;
+        this.playerRepository = playerRepository;
         this.passwordEncoder = passwordEncoder;
     }
 
@@ -102,5 +118,37 @@ public class ClubAdministratorService implements UserService<ClubAdministrator> 
             return true;
         }
         return false;
+    }
+
+    /**
+     * Vincula un jugador a un club
+     *
+     * @param clubId   club al que el jugador se vinculará
+     * @param playerId jugador a vincular
+     * @throws ResourceNotFoundException     si el club o el jugador no se
+     *                                       encuentran
+     * @throws ClubAlreadyHasPlayerException si el club ya tiene al jugador
+     *                                       especificado asociado
+     * @throws PlayerAlreadyHasClubException si el jugador ya tiene algún club
+     *                                       asociado
+     */
+    public void linkPlayerToClub(Long clubId, Long playerId) {
+        Club club = clubRepository.findById(clubId)
+                .orElseThrow(() -> new ResourceNotFoundException("Club not found with ID:" + clubId));
+
+        Player player = playerRepository.findById(playerId)
+                .orElseThrow(() -> new ResourceNotFoundException("Player not found with ID:" + playerId));
+
+        if (club.getPlayers().contains(player)) {
+            throw new ClubAlreadyHasPlayerException(
+                    "Club with ID: " + clubId + " has already player with ID: " + playerId + " associated");
+        } else if (player.getClub() != null) {
+            throw new PlayerAlreadyHasClubException(
+                    "Player with ID: " + playerId + " has already a club associated");
+        }
+
+        club.getPlayers().add(player);
+        player.setClub(club);
+        clubRepository.save(club);
     }
 }

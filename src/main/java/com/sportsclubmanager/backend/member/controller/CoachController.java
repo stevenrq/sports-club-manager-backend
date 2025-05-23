@@ -114,7 +114,7 @@ public class CoachController {
         return ResponseEntity.notFound().build();
     }
 
-    @PatchMapping("/change-affiliation-status/{id}")
+    @PatchMapping("/{id}/affiliation-status")
     @PreAuthorize("hasAnyRole('CLUB_ADMIN', 'ADMIN')")
     public ResponseEntity<Void> updateAffiliationStatus(@PathVariable Long id,
                                                         @RequestBody AffiliationStatus affiliationStatus) {

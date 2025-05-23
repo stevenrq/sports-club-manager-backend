@@ -14,11 +14,13 @@ import com.sportsclubmanager.backend.member.model.Player;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 @Data
 @Entity
 @Table(name = "clubs")
 @EqualsAndHashCode(exclude = {"clubAdministrator", "coaches", "players"})
+@ToString(exclude = {"clubAdministrator", "coaches", "players"})
 public class Club implements Serializable {
 
     @Serial

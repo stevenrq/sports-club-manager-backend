@@ -40,3 +40,14 @@ from users u
          left join players p on u.id = p.id
          left join clubs c on c.id = co.club_id or c.id = p.club_id or c.id = ca.club_id
 order by r.name, u.name;
+
+select clubs.id           as club_id,
+       clubs.name         as club_name,
+       clubs.address      as club_address,
+       clubs.phone_number as club_phone_number,
+       users.name         as player_name,
+       users.email        as player_email
+from clubs
+         join players on clubs.id = players.club_id
+         join users on players.id = users.id
+order by clubs.name, users.name;

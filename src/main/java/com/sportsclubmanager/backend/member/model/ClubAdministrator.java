@@ -6,9 +6,11 @@ import com.sportsclubmanager.backend.user.model.User;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
+@ToString(exclude = {"club"})
 @Entity
 @Table(name = "club_administrators")
 @PrimaryKeyJoinColumn(referencedColumnName = "id")
