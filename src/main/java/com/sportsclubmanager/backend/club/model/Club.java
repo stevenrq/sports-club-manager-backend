@@ -1,5 +1,7 @@
 package com.sportsclubmanager.backend.club.model;
 
+import java.io.Serial;
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
@@ -17,7 +19,10 @@ import lombok.EqualsAndHashCode;
 @Entity
 @Table(name = "clubs")
 @EqualsAndHashCode(exclude = {"clubAdministrator", "coaches", "players"})
-public class Club {
+public class Club implements Serializable {
+
+    @Serial
+    private static final long serialVersionUID = 1L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -26,16 +26,35 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Filtro de autenticación que maneja el proceso de login mediante JWT.
+ * Extiende UsernamePasswordAuthenticationFilter para procesar las credenciales
+ * del usuario y generar tokens JWT.
+ */
 public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
     private final Logger logger = LoggerFactory.getLogger(JwtAuthenticationFilter.class);
 
     private final AuthenticationManager authenticationManager;
 
+    /**
+     * Constructor que recibe el AuthenticationManager necesario para el proceso de autenticación.
+     *
+     * @param authenticationManager El gestor de autenticación a utilizar
+     */
     public JwtAuthenticationFilter(AuthenticationManager authenticationManager) {
         this.authenticationManager = authenticationManager;
     }
 
+    /**
+     * Intenta autenticar al usuario con las credenciales proporcionadas en la solicitud.
+     * Lee el nombre de usuario y contraseña del cuerpo de la solicitud JSON.
+     *
+     * @param request  La solicitud HTTP que contiene las credenciales
+     * @param response La respuesta HTTP
+     * @return Un objeto Authentication que representa la autenticación exitosa
+     * @throws AuthenticationException Si falla la autenticación
+     */
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response)
             throws AuthenticationException {
@@ -56,6 +75,17 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         return authenticationManager.authenticate(authenticationToken);
     }
 
+    /**
+     * Maneja la autenticación exitosa generando un token JWT.
+     * El token incluye el nombre de usuario y sus autoridades.
+     *
+     * @param request    La solicitud HTTP
+     * @param response   La respuesta HTTP donde se enviará el token
+     * @param chain      El filtro chain
+     * @param authResult El resultado de la autenticación exitosa
+     * @throws IOException      Si ocurre un error al escribir la respuesta
+     * @throws ServletException Si ocurre un error en el servlet
+     */
     @Override
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult)
             throws IOException, ServletException {
@@ -88,6 +118,15 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         response.setStatus(HttpServletResponse.SC_OK);
     }
 
+    /**
+     * Maneja la autenticación fallida enviando un mensaje de error al cliente.
+     *
+     * @param request  La solicitud HTTP
+     * @param response La respuesta HTTP donde se enviará el mensaje de error
+     * @param failed   La excepción que causó el fallo de autenticación
+     * @throws IOException      Si ocurre un error al escribir la respuesta
+     * @throws ServletException Si ocurre un error en el servlet
+     */
     @Override
     protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed)
             throws IOException, ServletException {

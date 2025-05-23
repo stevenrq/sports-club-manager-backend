@@ -24,12 +24,31 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Filtro para validar tokens JWT en las solicitudes entrantes.
+ * Extiende BasicAuthenticationFilter para procesar la autenticación basada en token.
+ */
 public class JwtValidationFilter extends BasicAuthenticationFilter {
 
+    /**
+     * Constructor que recibe el AuthenticationManager necesario para la validación.
+     *
+     * @param authenticationManager El gestor de autenticación a utilizar
+     */
     public JwtValidationFilter(AuthenticationManager authenticationManager) {
         super(authenticationManager);
     }
 
+    /**
+     * Valida el token JWT presente en el encabezado de la solicitud.
+     * Si el token es válido, establece la autenticación en el SecurityContext.
+     *
+     * @param request  La solicitud HTTP que contiene el token JWT
+     * @param response La respuesta HTTP
+     * @param chain    El filtro chain para continuar el procesamiento
+     * @throws IOException      Si ocurre un error al escribir la respuesta
+     * @throws ServletException Si ocurre un error en el servlet
+     */
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
             throws IOException, ServletException {

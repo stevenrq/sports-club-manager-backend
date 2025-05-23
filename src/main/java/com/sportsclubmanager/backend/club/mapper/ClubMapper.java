@@ -28,6 +28,12 @@ public interface ClubMapper {
     @Mapping(source = "players", target = "playerNames", qualifiedByName = "mapPlayerNames")
     ClubResponse toClubResponse(Club club);
 
+    /**
+     * Mapea un conjunto de entrenadores a sus nombres.
+     *
+     * @param coaches el conjunto de entrenadores a mapear
+     * @return conjunto de nombres de entrenadores
+     */
     @Named("mapCoachNames")
     default Set<String> mapCoachNames(Set<Coach> coaches) {
         if (coaches == null || coaches.isEmpty()) {
@@ -39,6 +45,12 @@ public interface ClubMapper {
                 .collect(Collectors.toSet());
     }
 
+    /**
+     * Mapea un conjunto de jugadores a sus nombres.
+     *
+     * @param players el conjunto de jugadores a mapear
+     * @return conjunto de nombres de jugadores
+     */
     @Named("mapPlayerNames")
     default Set<String> mapPlayerNames(Set<Player> players) {
         if (players == null || players.isEmpty()) {
