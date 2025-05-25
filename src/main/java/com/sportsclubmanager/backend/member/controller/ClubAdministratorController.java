@@ -2,7 +2,7 @@ package com.sportsclubmanager.backend.member.controller;
 
 import com.sportsclubmanager.backend.user.dto.ApiResponse;
 import com.sportsclubmanager.backend.user.model.AffiliationStatus;
-import com.sportsclubmanager.backend.shared.validation.UserValidationService;
+import com.sportsclubmanager.backend.shared.validation.ValidationService;
 import jakarta.validation.Valid;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
@@ -30,25 +30,25 @@ public class ClubAdministratorController {
 
     private final UserService<ClubAdministrator> userService;
     private final ClubAdministratorService clubAdministratorService;
-    private final UserValidationService userValidationService;
+    private final ValidationService validationService;
 
     private final UserMapper userMapper;
 
     public ClubAdministratorController(
             @Qualifier("clubAdministratorService") UserService<ClubAdministrator> userService,
             @Qualifier("clubAdministratorService") ClubAdministratorService clubAdministratorService,
-            UserValidationService userValidationService,
+            ValidationService validationService,
             UserMapper userMapper) {
         this.userService = userService;
         this.clubAdministratorService = clubAdministratorService;
-        this.userValidationService = userValidationService;
+        this.validationService = validationService;
         this.userMapper = userMapper;
     }
 
     @PostMapping
     public ResponseEntity<ApiResponse<UserResponse>> create(@Valid @RequestBody ClubAdministrator clubAdministrator,
             BindingResult bindingResult) {
-        ResponseEntity<ApiResponse<UserResponse>> validationResult = userValidationService
+        ResponseEntity<ApiResponse<UserResponse>> validationResult = validationService
                 .handleValidation(clubAdministrator, bindingResult);
         if (validationResult != null)
             return validationResult;
@@ -98,7 +98,7 @@ public class ClubAdministratorController {
             @Valid @RequestBody UserUpdateRequest userUpdateRequest,
             BindingResult bindingResult) {
 
-        ResponseEntity<ApiResponse<UserResponse>> validationResult = userValidationService
+        ResponseEntity<ApiResponse<UserResponse>> validationResult = validationService
                 .handleValidation(userUpdateRequest, bindingResult);
         if (validationResult != null)
             return validationResult;

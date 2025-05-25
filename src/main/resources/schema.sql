@@ -112,5 +112,35 @@ create table if not exists roles_authorities
     constraint fk_roles_authorities_authority_id foreign key (authority_id) references authorities (id)
 );
 
+create table if not exists events
+(
+    id                   bigint auto_increment,
+    name                 varchar(50)                not null,
+    description          varchar(255)               not null,
+    location             varchar(50)                not null,
+    start_date           datetime                   not null,
+    end_date             datetime                   not null,
+    event_visibility     enum ('PUBLIC', 'PRIVATE') not null,
+    maximum_participants int                        not null,
+    primary key (id),
+    unique key events_name (name)
+);
+
+create table if not exists tournaments
+(
+    id bigint not null,
+    primary key (id),
+    constraint fk_tournaments_events_id
+        foreign key (id) references events (id)
+);
+
+create table if not exists trainings
+(
+    id bigint not null,
+    primary key (id),
+    constraint fk_training_events_id
+        foreign key (id) references events (id)
+);
+
 # Habilita las comprobaciones de claves foráneas de nuevo para evitar errores al crear tablas
 set foreign_key_checks = 1;

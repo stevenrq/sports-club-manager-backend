@@ -2,7 +2,7 @@ package com.sportsclubmanager.backend.user.controller;
 
 import com.sportsclubmanager.backend.user.dto.ApiResponse;
 import com.sportsclubmanager.backend.user.model.AffiliationStatus;
-import com.sportsclubmanager.backend.shared.validation.UserValidationService;
+import com.sportsclubmanager.backend.shared.validation.ValidationService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
@@ -27,23 +27,23 @@ import java.util.Optional;
 public class UserController {
 
     private final UserService<User> userService;
-    private final UserValidationService userValidationService;
+    private final ValidationService validationService;
 
     private final UserMapper userMapper;
 
     public UserController(
             @Qualifier("userServiceImpl") UserService<User> userService,
-            UserValidationService userValidationService,
+            ValidationService validationService,
             UserMapper userMapper) {
         this.userService = userService;
-        this.userValidationService = userValidationService;
+        this.validationService = validationService;
         this.userMapper = userMapper;
     }
 
     @PostMapping
     public ResponseEntity<ApiResponse<UserResponse>> create(@Valid @RequestBody User user, BindingResult bindingResult) {
         ResponseEntity<ApiResponse<UserResponse>> validationResult =
-                userValidationService.handleValidation(user, bindingResult);
+                validationService.handleValidation(user, bindingResult);
         if (validationResult != null) return validationResult;
 
         User savedUser = userService.save(user);
@@ -93,7 +93,7 @@ public class UserController {
             BindingResult bindingResult) {
 
         ResponseEntity<ApiResponse<UserResponse>> validationResult =
-                userValidationService.handleValidation(userUpdateRequest, bindingResult);
+                validationService.handleValidation(userUpdateRequest, bindingResult);
         if (validationResult != null) return validationResult;
 
         return userService.update(id, userUpdateRequest)

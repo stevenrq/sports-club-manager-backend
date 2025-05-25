@@ -570,5 +570,26 @@ values (1, 1),
 
        (5, 8);
 
+insert into events(id, name, description, location, start_date, end_date, event_visibility, maximum_participants)
+values (1, 'Torneo Montería 2024', 'Gran torneo abierto de ajedrez en Montería', 'Montería',
+        '2025-05-15 09:00:00', '2025-05-15 13:00:00', 'PUBLIC', 50),
+
+       (2, 'Copa Ciudad Montería', 'Competencia interclubes de ajedrez', 'Montería',
+        '2025-05-20 10:00:00', '2025-05-20 15:00:00', 'PUBLIC', 64),
+
+       (3, 'Entrenamiento Avanzado', 'Entrenamiento especial para jugadores avanzados', 'Montería',
+        '2025-05-20 15:00:00', '2025-05-20 17:00:00', 'PRIVATE', 6),
+
+       (4, 'Clínica de Tácticas', 'Sesión de táctica y cálculo para principiantes', 'Montería',
+        '2025-05-01 16:00:00', '2025-05-01 18:00:00', 'PRIVATE', 7);
+
+insert into tournaments(id)
+values (1),
+       (2);
+
+insert into trainings(id)
+values (3),
+       (4);
+
 # Habilita las comprobaciones de claves foráneas de nuevo para evitar errores al crear tablas
 set foreign_key_checks = 1;

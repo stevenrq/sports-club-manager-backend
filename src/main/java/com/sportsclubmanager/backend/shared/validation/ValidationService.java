@@ -12,15 +12,21 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Service
-public class UserValidationService {
+public class ValidationService {
 
     /**
      * Maneja la validación de un objeto y su BindingResult.
+     * <p>
+     * <strong>IMPORTANTE:</strong>
+     * El parámetro <code>target</code> debe ser de tipo
+     * {@link User} o {@link UserUpdateRequest}.
+     * De lo contrario, se lanzará una excepción.
      *
      * @param target        objeto a validar
      * @param bindingResult resultado de la validación de las anotaciones
      * @param <T>           tipo del objeto a validar
      * @return ResponseEntity con errores de validación o null si es válido
+     * @throws IllegalArgumentException si el objeto no es de de tipo {@code User} o {@code UserUpdateRequest}
      */
     public <T> ResponseEntity<ApiResponse<UserResponse>> handleValidation(T target, BindingResult bindingResult) {
         if (!(target instanceof User || target instanceof UserUpdateRequest)) {
@@ -64,6 +70,7 @@ public class UserValidationService {
         bindingResult.getFieldErrors()
                 .forEach(error -> errors.put(error.getField(),
                         error.getField() + " field: " + error.getDefaultMessage()));
+
         return validationError(errors);
     }
 

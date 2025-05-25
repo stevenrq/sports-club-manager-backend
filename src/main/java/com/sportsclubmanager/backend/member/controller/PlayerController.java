@@ -3,7 +3,7 @@ package com.sportsclubmanager.backend.member.controller;
 import java.util.List;
 import java.util.Optional;
 
-import com.sportsclubmanager.backend.shared.validation.UserValidationService;
+import com.sportsclubmanager.backend.shared.validation.ValidationService;
 import com.sportsclubmanager.backend.user.dto.ApiResponse;
 import com.sportsclubmanager.backend.user.model.AffiliationStatus;
 import jakarta.validation.Valid;
@@ -27,21 +27,21 @@ import com.sportsclubmanager.backend.user.service.UserService;
 public class PlayerController {
 
     private final UserService<Player> playerService;
-    private final UserValidationService userValidationService;
+    private final ValidationService validationService;
 
     private final UserMapper userMapper;
 
-    public PlayerController(@Qualifier("playerService") UserService<Player> playerService, UserValidationService userValidationService,
+    public PlayerController(@Qualifier("playerService") UserService<Player> playerService, ValidationService validationService,
                             UserMapper userMapper) {
         this.playerService = playerService;
-        this.userValidationService = userValidationService;
+        this.validationService = validationService;
         this.userMapper = userMapper;
     }
 
     @PostMapping
     public ResponseEntity<ApiResponse<UserResponse>> create(@Valid @RequestBody Player player, BindingResult bindingResult) {
         ResponseEntity<ApiResponse<UserResponse>> validationResult =
-                userValidationService.handleValidation(player, bindingResult);
+                validationService.handleValidation(player, bindingResult);
         if (validationResult != null) return validationResult;
 
         Player savedPlayer = playerService.save(player);
@@ -90,7 +90,7 @@ public class PlayerController {
                                                             BindingResult bindingResult) {
 
         ResponseEntity<ApiResponse<UserResponse>> validationResult =
-                userValidationService.handleValidation(userUpdateRequest, bindingResult);
+                validationService.handleValidation(userUpdateRequest, bindingResult);
         if (validationResult != null) return validationResult;
 
         return playerService.update(id, userUpdateRequest)

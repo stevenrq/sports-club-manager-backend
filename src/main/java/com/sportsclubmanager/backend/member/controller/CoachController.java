@@ -3,7 +3,7 @@ package com.sportsclubmanager.backend.member.controller;
 import java.util.List;
 import java.util.Optional;
 
-import com.sportsclubmanager.backend.shared.validation.UserValidationService;
+import com.sportsclubmanager.backend.shared.validation.ValidationService;
 import com.sportsclubmanager.backend.user.dto.ApiResponse;
 import com.sportsclubmanager.backend.user.model.AffiliationStatus;
 import jakarta.validation.Valid;
@@ -27,21 +27,21 @@ import com.sportsclubmanager.backend.user.service.UserService;
 public class CoachController {
 
     private final UserService<Coach> coachService;
-    private final UserValidationService userValidationService;
+    private final ValidationService validationService;
 
     private final UserMapper userMapper;
 
-    public CoachController(@Qualifier("coachService") UserService<Coach> coachService, UserValidationService userValidationService,
+    public CoachController(@Qualifier("coachService") UserService<Coach> coachService, ValidationService validationService,
                            UserMapper userMapper) {
         this.coachService = coachService;
-        this.userValidationService = userValidationService;
+        this.validationService = validationService;
         this.userMapper = userMapper;
     }
 
     @PostMapping
     public ResponseEntity<ApiResponse<UserResponse>> create(@Valid @RequestBody Coach coach, BindingResult bindingResult) {
         ResponseEntity<ApiResponse<UserResponse>> validationResult =
-                userValidationService.handleValidation(coach, bindingResult);
+                validationService.handleValidation(coach, bindingResult);
         if (validationResult != null) return validationResult;
 
         Coach savedCoach = coachService.save(coach);
@@ -90,7 +90,7 @@ public class CoachController {
             BindingResult bindingResult) {
 
         ResponseEntity<ApiResponse<UserResponse>> validationResult =
-                userValidationService.handleValidation(userUpdateRequest, bindingResult);
+                validationService.handleValidation(userUpdateRequest, bindingResult);
         if (validationResult != null) return validationResult;
 
         return coachService.update(id, userUpdateRequest)

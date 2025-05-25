@@ -32,6 +32,7 @@ public class ApiResponse<T> {
      */
     public ApiResponse(T data) {
         this.data = data;
+        this.errors = null;
     }
 
     /**
@@ -41,5 +42,6 @@ public class ApiResponse<T> {
      */
     public ApiResponse(Map<String, String> errors) {
         this.errors = errors;
+        this.data = null;
     }
 }

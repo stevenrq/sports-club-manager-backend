@@ -11,6 +11,13 @@ import com.sportsclubmanager.backend.club.model.Club;
 
 public interface ClubService {
 
+    /**
+     * Guarda un nuevo club y lo asocia con un administrador.
+     *
+     * @param club        El club a guardar
+     * @param clubAdminId El ID del administrador a asignar
+     * @return El club guardado
+     */
     Club save(Club club, Long clubAdminId);
 
     Optional<Club> findById(Long id);
