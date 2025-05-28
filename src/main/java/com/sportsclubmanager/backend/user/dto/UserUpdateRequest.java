@@ -2,7 +2,6 @@ package com.sportsclubmanager.backend.user.dto;
 
 import com.sportsclubmanager.backend.shared.util.RoleAuthorityUtils;
 import com.sportsclubmanager.backend.user.model.Role;
-
 import com.sportsclubmanager.backend.user.validation.annotation.NoSpecialCharacters;
 import jakarta.persistence.Column;
 import jakarta.persistence.Transient;
@@ -10,11 +9,10 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import java.util.Set;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-
-import java.util.Set;
 
 /**
  * Representa la información necesaria para actualizar un usuario.

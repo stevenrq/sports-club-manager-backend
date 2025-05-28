@@ -1,9 +1,7 @@
 package com.sportsclubmanager.backend.user.dto;
 
-import java.util.Set;
-
 import com.sportsclubmanager.backend.user.model.Role;
-
+import java.util.Set;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -25,7 +23,8 @@ public class UserResponse {
     private Set<Role> roles;
 
     public boolean isAdmin() {
-        return this.getRoles().stream()
-                .anyMatch(role -> role.getName().equals("ROLE_ADMIN"));
+        return this.getRoles()
+            .stream()
+            .anyMatch(role -> role.getName().equals("ROLE_ADMIN"));
     }
 }

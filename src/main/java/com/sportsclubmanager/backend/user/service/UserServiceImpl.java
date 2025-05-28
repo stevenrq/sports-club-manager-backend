@@ -6,15 +6,13 @@ import com.sportsclubmanager.backend.user.model.AffiliationStatus;
 import com.sportsclubmanager.backend.user.model.User;
 import com.sportsclubmanager.backend.user.repository.RoleRepository;
 import com.sportsclubmanager.backend.user.repository.UserRepository;
-
+import java.util.List;
+import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
-import java.util.Optional;
 
 @Service
 public class UserServiceImpl implements UserService<User> {
@@ -24,8 +22,11 @@ public class UserServiceImpl implements UserService<User> {
 
     private final PasswordEncoder passwordEncoder;
 
-    public UserServiceImpl(UserRepository userRepository, RoleRepository roleRepository,
-            PasswordEncoder passwordEncoder) {
+    public UserServiceImpl(
+        UserRepository userRepository,
+        RoleRepository roleRepository,
+        PasswordEncoder passwordEncoder
+    ) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.passwordEncoder = passwordEncoder;
@@ -76,7 +77,9 @@ public class UserServiceImpl implements UserService<User> {
             userUpdated.setPhoneNumber(userUpdateRequest.getPhoneNumber());
             userUpdated.setEmail(userUpdateRequest.getEmail());
             userUpdated.setUsername(userUpdateRequest.getUsername());
-            userUpdated.setRoles(RoleAuthorityUtils.getRoles(userUpdated, roleRepository));
+            userUpdated.setRoles(
+                RoleAuthorityUtils.getRoles(userUpdated, roleRepository)
+            );
 
             return Optional.of(userRepository.save(userUpdated));
         }
@@ -90,7 +93,10 @@ public class UserServiceImpl implements UserService<User> {
     }
 
     @Override
-    public boolean updateAffiliationStatus(Long id, AffiliationStatus affiliationStatus) {
+    public boolean updateAffiliationStatus(
+        Long id,
+        AffiliationStatus affiliationStatus
+    ) {
         Optional<User> userOptional = userRepository.findById(id);
 
         if (userOptional.isPresent()) {

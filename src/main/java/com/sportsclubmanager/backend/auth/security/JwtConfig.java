@@ -1,7 +1,6 @@
 package com.sportsclubmanager.backend.auth.security;
 
 import io.jsonwebtoken.Jwts;
-
 import javax.crypto.SecretKey;
 
 /**
@@ -30,7 +29,6 @@ public class JwtConfig {
      * Tipo de contenido utilizado en las respuestas HTTP.
      */
     public static final String CONTENT_TYPE = "application/json";
-    
-    private JwtConfig() {
-    }
+
+    private JwtConfig() {}
 }

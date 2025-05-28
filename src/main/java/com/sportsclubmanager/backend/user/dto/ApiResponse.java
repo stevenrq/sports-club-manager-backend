@@ -1,8 +1,7 @@
 package com.sportsclubmanager.backend.user.dto;
 
-import lombok.*;
-
 import java.util.Map;
+import lombok.*;
 
 /**
  * Clase genérica que representa la estructura de respuesta de la API.

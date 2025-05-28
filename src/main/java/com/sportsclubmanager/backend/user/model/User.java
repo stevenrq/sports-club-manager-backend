@@ -1,5 +1,6 @@
 package com.sportsclubmanager.backend.user.model;
 
+import com.sportsclubmanager.backend.shared.util.RoleAuthorityUtils;
 import com.sportsclubmanager.backend.user.validation.annotation.NoSpecialCharacters;
 import com.sportsclubmanager.backend.user.validation.annotation.PasswordStrength;
 import jakarta.persistence.*;
@@ -7,14 +8,11 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import lombok.Data;
-
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
-
-import com.sportsclubmanager.backend.shared.util.RoleAuthorityUtils;
+import lombok.Data;
 
 @Data
 @Entity
@@ -83,9 +81,20 @@ public class User implements Serializable {
     @Transient
     private boolean admin;
 
-    @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST,
-            CascadeType.REFRESH})
-    @JoinTable(name = "users_roles", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
+    @ManyToMany(
+        fetch = FetchType.EAGER,
+        cascade = {
+            CascadeType.DETACH,
+            CascadeType.MERGE,
+            CascadeType.PERSIST,
+            CascadeType.REFRESH,
+        }
+    )
+    @JoinTable(
+        name = "users_roles",
+        joinColumns = @JoinColumn(name = "user_id"),
+        inverseJoinColumns = @JoinColumn(name = "role_id")
+    )
     private Set<Role> roles = new HashSet<>();
 
     @Enumerated(EnumType.STRING)

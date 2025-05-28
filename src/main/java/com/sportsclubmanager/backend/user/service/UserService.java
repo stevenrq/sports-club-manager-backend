@@ -1,13 +1,11 @@
 package com.sportsclubmanager.backend.user.service;
 
-import com.sportsclubmanager.backend.user.model.AffiliationStatus;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-
 import com.sportsclubmanager.backend.user.dto.UserUpdateRequest;
-
+import com.sportsclubmanager.backend.user.model.AffiliationStatus;
 import java.util.List;
 import java.util.Optional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 /**
  * UserService define las operaciones que se pueden realizar sobre las entidades
@@ -31,5 +29,8 @@ public interface UserService<T> {
 
     void deleteById(Long id);
 
-    boolean updateAffiliationStatus(Long id, AffiliationStatus affiliationStatus);
+    boolean updateAffiliationStatus(
+        Long id,
+        AffiliationStatus affiliationStatus
+    );
 }

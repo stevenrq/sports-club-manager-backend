@@ -3,12 +3,11 @@ package com.sportsclubmanager.backend.event.service;
 import com.sportsclubmanager.backend.event.dto.EventUpdateRequest;
 import com.sportsclubmanager.backend.event.model.Tournament;
 import com.sportsclubmanager.backend.event.repository.TournamentRepository;
+import java.util.List;
+import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
-import java.util.Optional;
 
 @Service
 public class TournamentEventService implements EventService<Tournament> {
@@ -40,19 +39,30 @@ public class TournamentEventService implements EventService<Tournament> {
     }
 
     @Override
-    public Optional<Tournament> update(Long id, EventUpdateRequest eventUpdateRequest) {
-        Optional<Tournament> tournamentOptional = tournamentRepository.findById(id);
+    public Optional<Tournament> update(
+        Long id,
+        EventUpdateRequest eventUpdateRequest
+    ) {
+        Optional<Tournament> tournamentOptional = tournamentRepository.findById(
+            id
+        );
 
         if (tournamentOptional.isPresent()) {
             Tournament tournamentUpdated = tournamentOptional.orElseThrow();
 
             tournamentUpdated.setName(eventUpdateRequest.getName());
-            tournamentUpdated.setDescription(eventUpdateRequest.getDescription());
+            tournamentUpdated.setDescription(
+                eventUpdateRequest.getDescription()
+            );
             tournamentUpdated.setLocation(eventUpdateRequest.getLocation());
             tournamentUpdated.setStartDate(eventUpdateRequest.getStartDate());
             tournamentUpdated.setEndDate(eventUpdateRequest.getEndDate());
-            tournamentUpdated.setEventVisibility(eventUpdateRequest.getEventVisibility());
-            tournamentUpdated.setMaximumParticipants(eventUpdateRequest.getMaximumParticipants());
+            tournamentUpdated.setEventVisibility(
+                eventUpdateRequest.getEventVisibility()
+            );
+            tournamentUpdated.setMaximumParticipants(
+                eventUpdateRequest.getMaximumParticipants()
+            );
 
             return Optional.of(tournamentRepository.save(tournamentUpdated));
         }

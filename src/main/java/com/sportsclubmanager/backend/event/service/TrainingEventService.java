@@ -3,12 +3,11 @@ package com.sportsclubmanager.backend.event.service;
 import com.sportsclubmanager.backend.event.dto.EventUpdateRequest;
 import com.sportsclubmanager.backend.event.model.Training;
 import com.sportsclubmanager.backend.event.repository.TrainingRepository;
+import java.util.List;
+import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
-import java.util.Optional;
 
 @Service
 public class TrainingEventService implements EventService<Training> {
@@ -40,7 +39,10 @@ public class TrainingEventService implements EventService<Training> {
     }
 
     @Override
-    public Optional<Training> update(Long id, EventUpdateRequest eventUpdateRequest) {
+    public Optional<Training> update(
+        Long id,
+        EventUpdateRequest eventUpdateRequest
+    ) {
         Optional<Training> trainingOptional = trainingRepository.findById(id);
 
         if (trainingOptional.isPresent()) {
@@ -51,8 +53,12 @@ public class TrainingEventService implements EventService<Training> {
             trainingUpdated.setLocation(eventUpdateRequest.getLocation());
             trainingUpdated.setStartDate(eventUpdateRequest.getStartDate());
             trainingUpdated.setEndDate(eventUpdateRequest.getEndDate());
-            trainingUpdated.setEventVisibility(eventUpdateRequest.getEventVisibility());
-            trainingUpdated.setMaximumParticipants(eventUpdateRequest.getMaximumParticipants());
+            trainingUpdated.setEventVisibility(
+                eventUpdateRequest.getEventVisibility()
+            );
+            trainingUpdated.setMaximumParticipants(
+                eventUpdateRequest.getMaximumParticipants()
+            );
 
             return Optional.of(trainingRepository.save(trainingUpdated));
         }

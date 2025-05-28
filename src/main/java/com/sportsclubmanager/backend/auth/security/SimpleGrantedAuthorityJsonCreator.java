@@ -15,6 +15,7 @@ public abstract class SimpleGrantedAuthorityJsonCreator {
      * @param role El rol o autoridad que se asignará, especificado como una propiedad JSON "authority"
      */
     @JsonCreator
-    protected SimpleGrantedAuthorityJsonCreator(@JsonProperty("authority") String role) {
-    }
+    protected SimpleGrantedAuthorityJsonCreator(
+        @JsonProperty("authority") String role
+    ) {}
 }

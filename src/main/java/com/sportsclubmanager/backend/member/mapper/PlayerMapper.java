@@ -7,7 +7,6 @@ import org.mapstruct.Mapping;
 
 @Mapper(componentModel = "spring")
 public interface PlayerMapper {
-
     @Mapping(source = "id", target = "id")
     @Mapping(source = "nationalId", target = "nationalId")
     @Mapping(source = "name", target = "name")

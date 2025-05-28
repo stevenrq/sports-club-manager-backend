@@ -1,14 +1,20 @@
 package com.sportsclubmanager.backend.auth.security.filter;
 
+import static com.sportsclubmanager.backend.auth.security.JwtConfig.*;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sportsclubmanager.backend.user.model.User;
-
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.util.Collection;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -18,22 +24,17 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import static com.sportsclubmanager.backend.auth.security.JwtConfig.*;
-
-import java.io.IOException;
-import java.util.Collection;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-
 /**
  * Filtro de autenticación que maneja el proceso de login mediante JWT.
  * Extiende UsernamePasswordAuthenticationFilter para procesar las credenciales
  * del usuario y generar tokens JWT.
  */
-public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
+public class JwtAuthenticationFilter
+    extends UsernamePasswordAuthenticationFilter {
 
-    private final Logger logger = LoggerFactory.getLogger(JwtAuthenticationFilter.class);
+    private final Logger logger = LoggerFactory.getLogger(
+        JwtAuthenticationFilter.class
+    );
 
     private final AuthenticationManager authenticationManager;
 
@@ -42,7 +43,9 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
      *
      * @param authenticationManager El gestor de autenticación a utilizar
      */
-    public JwtAuthenticationFilter(AuthenticationManager authenticationManager) {
+    public JwtAuthenticationFilter(
+        AuthenticationManager authenticationManager
+    ) {
         this.authenticationManager = authenticationManager;
     }
 
@@ -56,22 +59,28 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
      * @throws AuthenticationException Si falla la autenticación
      */
     @Override
-    public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response)
-            throws AuthenticationException {
-
+    public Authentication attemptAuthentication(
+        HttpServletRequest request,
+        HttpServletResponse response
+    ) throws AuthenticationException {
         User user;
         String username = null;
         String password = null;
 
         try {
-            user = new ObjectMapper().readValue(request.getInputStream(), User.class);
+            user = new ObjectMapper()
+                .readValue(request.getInputStream(), User.class);
             username = user.getUsername();
             password = user.getPassword();
         } catch (IOException e) {
-            logger.error("Failed to parse user data from the request. Please ensure the JSON is properly formatted. Error: {}", e.getMessage());
+            logger.error(
+                "Failed to parse user data from the request. Please ensure the JSON is properly formatted. Error: {}",
+                e.getMessage()
+            );
         }
 
-        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(username, password);
+        UsernamePasswordAuthenticationToken authenticationToken =
+            new UsernamePasswordAuthenticationToken(username, password);
         return authenticationManager.authenticate(authenticationToken);
     }
 
@@ -87,27 +96,34 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
      * @throws ServletException Si ocurre un error en el servlet
      */
     @Override
-    protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult)
-            throws IOException, ServletException {
-
+    protected void successfulAuthentication(
+        HttpServletRequest request,
+        HttpServletResponse response,
+        FilterChain chain,
+        Authentication authResult
+    ) throws IOException, ServletException {
         org.springframework.security.core.userdetails.User user =
-                (org.springframework.security.core.userdetails.User) authResult.getPrincipal();
+            (org.springframework.security.core.userdetails.User) authResult.getPrincipal();
 
         String username = user.getUsername();
-        Collection<? extends GrantedAuthority> authorities = user.getAuthorities();
+        Collection<? extends GrantedAuthority> authorities =
+            user.getAuthorities();
 
         Claims claims = Jwts.claims()
-                .add("authorities", new ObjectMapper().writeValueAsString(authorities))
-                .add("username", username)
-                .build();
+            .add(
+                "authorities",
+                new ObjectMapper().writeValueAsString(authorities)
+            )
+            .add("username", username)
+            .build();
 
         String token = Jwts.builder()
-                .subject(username)
-                .claims(claims)
-                .expiration(new Date(System.currentTimeMillis() + 3600000)) // 1 hora
-                .issuedAt(new Date())
-                .signWith(SECRET_KEY)
-                .compact();
+            .subject(username)
+            .claims(claims)
+            .expiration(new Date(System.currentTimeMillis() + 3600000)) // 1 hora
+            .issuedAt(new Date())
+            .signWith(SECRET_KEY)
+            .compact();
 
         Map<String, String> body = new HashMap<>();
         body.put("access_token", token);
@@ -128,9 +144,11 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
      * @throws ServletException Si ocurre un error en el servlet
      */
     @Override
-    protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed)
-            throws IOException, ServletException {
-
+    protected void unsuccessfulAuthentication(
+        HttpServletRequest request,
+        HttpServletResponse response,
+        AuthenticationException failed
+    ) throws IOException, ServletException {
         Map<String, String> body = new HashMap<>();
         body.put("message", "Login failed");
         body.put("error", failed.getMessage());

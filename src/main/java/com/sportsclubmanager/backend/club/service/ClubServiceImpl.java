@@ -1,17 +1,15 @@
 package com.sportsclubmanager.backend.club.service;
 
-import java.util.List;
-import java.util.Optional;
-
-import com.sportsclubmanager.backend.member.model.ClubAdministrator;
-import com.sportsclubmanager.backend.member.service.ClubAdministratorService;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-
 import com.sportsclubmanager.backend.club.dto.ClubUpdateRequest;
 import com.sportsclubmanager.backend.club.exception.ClubDeletingException;
 import com.sportsclubmanager.backend.club.model.Club;
 import com.sportsclubmanager.backend.club.repository.ClubRepository;
+import com.sportsclubmanager.backend.member.model.ClubAdministrator;
+import com.sportsclubmanager.backend.member.service.ClubAdministratorService;
+import java.util.List;
+import java.util.Optional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -21,7 +19,10 @@ public class ClubServiceImpl implements ClubService {
 
     private final ClubRepository clubRepository;
 
-    public ClubServiceImpl(ClubRepository clubRepository, ClubAdministratorService clubAdministratorService) {
+    public ClubServiceImpl(
+        ClubRepository clubRepository,
+        ClubAdministratorService clubAdministratorService
+    ) {
         this.clubRepository = clubRepository;
         this.clubAdministratorService = clubAdministratorService;
     }
@@ -39,17 +40,25 @@ public class ClubServiceImpl implements ClubService {
     @Override
     public Club save(Club club, Long clubAdminId) {
         if (clubAdminId == null) {
-            throw new IllegalArgumentException("Club Administrator ID must not be null");
+            throw new IllegalArgumentException(
+                "Club Administrator ID must not be null"
+            );
         }
 
-        Optional<ClubAdministrator> clubAdminOptional = clubAdministratorService.findById(clubAdminId);
+        Optional<ClubAdministrator> clubAdminOptional =
+            clubAdministratorService.findById(clubAdminId);
         if (clubAdminOptional.isEmpty()) {
-            throw new IllegalArgumentException("Club Administrator with ID " + clubAdminId + " not found");
+            throw new IllegalArgumentException(
+                "Club Administrator with ID " + clubAdminId + " not found"
+            );
         }
 
         ClubAdministrator clubAdmin = clubAdminOptional.orElseThrow();
         if (clubAdmin.getClub() != null) {
-            throw new IllegalArgumentException("Club Administrator already has a club assigned with ID " + clubAdmin.getClub().getId());
+            throw new IllegalArgumentException(
+                "Club Administrator already has a club assigned with ID " +
+                clubAdmin.getClub().getId()
+            );
         }
 
         club.setClubAdministrator(clubAdmin);
@@ -107,7 +116,9 @@ public class ClubServiceImpl implements ClubService {
             try {
                 clubToDelete.getClubAdministrator().setClub(null);
                 clubToDelete.getCoaches().forEach(coach -> coach.setClub(null));
-                clubToDelete.getPlayers().forEach(player -> player.setClub(null));
+                clubToDelete
+                    .getPlayers()
+                    .forEach(player -> player.setClub(null));
             } catch (Exception e) {
                 throw new ClubDeletingException("Error while deleting club", e);
             }

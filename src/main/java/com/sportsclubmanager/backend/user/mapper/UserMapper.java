@@ -1,14 +1,12 @@
 package com.sportsclubmanager.backend.user.mapper;
 
+import com.sportsclubmanager.backend.user.dto.UserResponse;
+import com.sportsclubmanager.backend.user.model.User;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
-import com.sportsclubmanager.backend.user.dto.UserResponse;
-import com.sportsclubmanager.backend.user.model.User;
-
 @Mapper(componentModel = "spring")
 public interface UserMapper {
-
     @Mapping(source = "id", target = "id")
     @Mapping(source = "nationalId", target = "nationalId")
     @Mapping(source = "name", target = "name")

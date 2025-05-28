@@ -1,32 +1,30 @@
 package com.sportsclubmanager.backend.member.service;
 
+import com.sportsclubmanager.backend.club.model.Club;
+import com.sportsclubmanager.backend.club.repository.ClubRepository;
+import com.sportsclubmanager.backend.member.exception.ClubAlreadyHasPlayerException;
+import com.sportsclubmanager.backend.member.exception.PlayerAlreadyHasClubException;
+import com.sportsclubmanager.backend.member.model.ClubAdministrator;
+import com.sportsclubmanager.backend.member.model.Player;
+import com.sportsclubmanager.backend.member.repository.ClubAdministratorRepository;
+import com.sportsclubmanager.backend.member.repository.PlayerRepository;
+import com.sportsclubmanager.backend.shared.exception.ResourceNotFoundException;
+import com.sportsclubmanager.backend.shared.util.RoleAuthorityUtils;
+import com.sportsclubmanager.backend.user.dto.UserUpdateRequest;
+import com.sportsclubmanager.backend.user.model.AffiliationStatus;
+import com.sportsclubmanager.backend.user.repository.RoleRepository;
+import com.sportsclubmanager.backend.user.service.UserService;
 import java.util.List;
 import java.util.Optional;
-
-import com.sportsclubmanager.backend.user.model.AffiliationStatus;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.sportsclubmanager.backend.club.model.Club;
-import com.sportsclubmanager.backend.club.repository.ClubRepository;
-import com.sportsclubmanager.backend.member.model.ClubAdministrator;
-import com.sportsclubmanager.backend.member.model.Player;
-import com.sportsclubmanager.backend.member.repository.ClubAdministratorRepository;
-import com.sportsclubmanager.backend.member.repository.PlayerRepository;
-import com.sportsclubmanager.backend.member.exception.ClubAlreadyHasPlayerException;
-import com.sportsclubmanager.backend.member.exception.PlayerAlreadyHasClubException;
-import com.sportsclubmanager.backend.shared.exception.ResourceNotFoundException;
-import com.sportsclubmanager.backend.shared.util.RoleAuthorityUtils;
-import com.sportsclubmanager.backend.user.dto.UserUpdateRequest;
-import com.sportsclubmanager.backend.user.repository.RoleRepository;
-import com.sportsclubmanager.backend.user.service.UserService;
-
 @Service
-public class ClubAdministratorService implements UserService<ClubAdministrator> {
+public class ClubAdministratorService
+    implements UserService<ClubAdministrator> {
 
     private final ClubAdministratorRepository clubAdministratorRepository;
     private final RoleRepository roleRepository;
@@ -36,11 +34,12 @@ public class ClubAdministratorService implements UserService<ClubAdministrator> 
     private final PasswordEncoder passwordEncoder;
 
     public ClubAdministratorService(
-            ClubAdministratorRepository clubAdministratorRepository,
-            RoleRepository roleRepository,
-            ClubRepository clubRepository,
-            PlayerRepository playerRepository,
-            PasswordEncoder passwordEncoder) {
+        ClubAdministratorRepository clubAdministratorRepository,
+        RoleRepository roleRepository,
+        ClubRepository clubRepository,
+        PlayerRepository playerRepository,
+        PasswordEncoder passwordEncoder
+    ) {
         this.clubAdministratorRepository = clubAdministratorRepository;
         this.roleRepository = roleRepository;
         this.clubRepository = clubRepository;
@@ -51,10 +50,13 @@ public class ClubAdministratorService implements UserService<ClubAdministrator> 
     @Override
     @Transactional
     public ClubAdministrator save(ClubAdministrator clubAdministrator) {
-        clubAdministrator.setRoles(RoleAuthorityUtils.getRoles(clubAdministrator, roleRepository));
-        clubAdministrator.setPassword(passwordEncoder.encode(clubAdministrator.getPassword()));
+        clubAdministrator.setRoles(
+            RoleAuthorityUtils.getRoles(clubAdministrator, roleRepository)
+        );
+        clubAdministrator.setPassword(
+            passwordEncoder.encode(clubAdministrator.getPassword())
+        );
         return clubAdministratorRepository.save(clubAdministrator);
-
     }
 
     @Override
@@ -83,20 +85,29 @@ public class ClubAdministratorService implements UserService<ClubAdministrator> 
 
     @Override
     @Transactional
-    public Optional<ClubAdministrator> update(Long id, UserUpdateRequest userUpdateRequest) {
-        Optional<ClubAdministrator> clubAdminOptional = clubAdministratorRepository.findById(id);
+    public Optional<ClubAdministrator> update(
+        Long id,
+        UserUpdateRequest userUpdateRequest
+    ) {
+        Optional<ClubAdministrator> clubAdminOptional =
+            clubAdministratorRepository.findById(id);
 
         if (clubAdminOptional.isPresent()) {
-            ClubAdministrator clubAdminUpdated = clubAdminOptional.orElseThrow();
+            ClubAdministrator clubAdminUpdated =
+                clubAdminOptional.orElseThrow();
 
             clubAdminUpdated.setName(userUpdateRequest.getName());
             clubAdminUpdated.setLastName(userUpdateRequest.getLastName());
             clubAdminUpdated.setPhoneNumber(userUpdateRequest.getPhoneNumber());
             clubAdminUpdated.setEmail(userUpdateRequest.getEmail());
             clubAdminUpdated.setUsername(userUpdateRequest.getUsername());
-            clubAdminUpdated.setRoles(RoleAuthorityUtils.getRoles(clubAdminUpdated, roleRepository));
+            clubAdminUpdated.setRoles(
+                RoleAuthorityUtils.getRoles(clubAdminUpdated, roleRepository)
+            );
 
-            return Optional.of(clubAdministratorRepository.save(clubAdminUpdated));
+            return Optional.of(
+                clubAdministratorRepository.save(clubAdminUpdated)
+            );
         }
         return Optional.empty();
     }
@@ -108,8 +119,12 @@ public class ClubAdministratorService implements UserService<ClubAdministrator> 
     }
 
     @Override
-    public boolean updateAffiliationStatus(Long id, AffiliationStatus affiliationStatus) {
-        Optional<ClubAdministrator> clubAdminOptional = clubAdministratorRepository.findById(id);
+    public boolean updateAffiliationStatus(
+        Long id,
+        AffiliationStatus affiliationStatus
+    ) {
+        Optional<ClubAdministrator> clubAdminOptional =
+            clubAdministratorRepository.findById(id);
 
         if (clubAdminOptional.isPresent()) {
             ClubAdministrator clubAdmin = clubAdminOptional.orElseThrow();
@@ -133,18 +148,34 @@ public class ClubAdministratorService implements UserService<ClubAdministrator> 
      *                                       asociado
      */
     public void linkPlayerToClub(Long clubId, Long playerId) {
-        Club club = clubRepository.findById(clubId)
-                .orElseThrow(() -> new ResourceNotFoundException("Club not found with ID: " + clubId));
+        Club club = clubRepository
+            .findById(clubId)
+            .orElseThrow(() ->
+                new ResourceNotFoundException(
+                    "Club not found with ID: " + clubId
+                )
+            );
 
-        Player player = playerRepository.findById(playerId)
-                .orElseThrow(() -> new ResourceNotFoundException("Player not found with ID: " + playerId));
+        Player player = playerRepository
+            .findById(playerId)
+            .orElseThrow(() ->
+                new ResourceNotFoundException(
+                    "Player not found with ID: " + playerId
+                )
+            );
 
         if (club.getPlayers().contains(player)) {
             throw new ClubAlreadyHasPlayerException(
-                    "Club with ID: " + clubId + " has already player with ID: " + playerId + " associated");
+                "Club with ID: " +
+                clubId +
+                " has already player with ID: " +
+                playerId +
+                " associated"
+            );
         } else if (player.getClub() != null) {
             throw new PlayerAlreadyHasClubException(
-                    "Player with ID: " + playerId + " has already a club associated");
+                "Player with ID: " + playerId + " has already a club associated"
+            );
         }
 
         club.getPlayers().add(player);

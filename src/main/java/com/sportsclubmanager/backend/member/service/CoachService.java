@@ -1,21 +1,19 @@
 package com.sportsclubmanager.backend.member.service;
 
+import com.sportsclubmanager.backend.member.model.Coach;
+import com.sportsclubmanager.backend.member.repository.CoachRepository;
+import com.sportsclubmanager.backend.shared.util.RoleAuthorityUtils;
+import com.sportsclubmanager.backend.user.dto.UserUpdateRequest;
+import com.sportsclubmanager.backend.user.model.AffiliationStatus;
+import com.sportsclubmanager.backend.user.repository.RoleRepository;
+import com.sportsclubmanager.backend.user.service.UserService;
 import java.util.List;
 import java.util.Optional;
-
-import com.sportsclubmanager.backend.user.model.AffiliationStatus;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import com.sportsclubmanager.backend.member.model.Coach;
-import com.sportsclubmanager.backend.member.repository.CoachRepository;
-import com.sportsclubmanager.backend.shared.util.RoleAuthorityUtils;
-import com.sportsclubmanager.backend.user.dto.UserUpdateRequest;
-import com.sportsclubmanager.backend.user.repository.RoleRepository;
-import com.sportsclubmanager.backend.user.service.UserService;
 
 @Service
 public class CoachService implements UserService<Coach> {
@@ -25,8 +23,11 @@ public class CoachService implements UserService<Coach> {
 
     private final PasswordEncoder passwordEncoder;
 
-    public CoachService(CoachRepository coachRepository, RoleRepository roleRepository,
-            PasswordEncoder passwordEncoder) {
+    public CoachService(
+        CoachRepository coachRepository,
+        RoleRepository roleRepository,
+        PasswordEncoder passwordEncoder
+    ) {
         this.coachRepository = coachRepository;
         this.roleRepository = roleRepository;
         this.passwordEncoder = passwordEncoder;
@@ -66,7 +67,10 @@ public class CoachService implements UserService<Coach> {
 
     @Override
     @Transactional
-    public Optional<Coach> update(Long id, UserUpdateRequest userUpdateRequest) {
+    public Optional<Coach> update(
+        Long id,
+        UserUpdateRequest userUpdateRequest
+    ) {
         Optional<Coach> coachOptional = coachRepository.findById(id);
 
         if (coachOptional.isPresent()) {
@@ -77,7 +81,9 @@ public class CoachService implements UserService<Coach> {
             coachUpdated.setPhoneNumber(userUpdateRequest.getPhoneNumber());
             coachUpdated.setEmail(userUpdateRequest.getEmail());
             coachUpdated.setUsername(userUpdateRequest.getUsername());
-            coachUpdated.setRoles(RoleAuthorityUtils.getRoles(coachUpdated, roleRepository));
+            coachUpdated.setRoles(
+                RoleAuthorityUtils.getRoles(coachUpdated, roleRepository)
+            );
 
             return Optional.of(coachRepository.save(coachUpdated));
         }
@@ -91,7 +97,10 @@ public class CoachService implements UserService<Coach> {
     }
 
     @Override
-    public boolean updateAffiliationStatus(Long id, AffiliationStatus affiliationStatus) {
+    public boolean updateAffiliationStatus(
+        Long id,
+        AffiliationStatus affiliationStatus
+    ) {
         Optional<Coach> coachOptional = coachRepository.findById(id);
 
         if (coachOptional.isPresent()) {
