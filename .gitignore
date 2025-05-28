@@ -65,6 +65,12 @@ out/
 /.nb-gradle/
 
 # --- Other Common Ignores ---
+# Prettier
+/node_modules
+package.json
+package-lock.json
+.prettierrc.yaml
+
 # Operating System files
 .DS_Store
 

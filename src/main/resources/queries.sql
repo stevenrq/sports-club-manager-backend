@@ -1,53 +1,136 @@
--- Consulta para obtener información detallada sobre los clubes y sus relaciones con
--- administradores, entrenadores y jugadores.
-select admin_user.name     as club_administrator_name,
-       coach_user.name     as coach_name,
-       player_user.name    as player_name,
-       clubs.name          as club_name,
-       clubs.address       as club_address,
-       clubs.phone_number  as club_phone_number,
-       clubs.enabled       as club_enabled,
-       clubs.creation_date as club_creation_date
-from clubs
-         join club_administrators on clubs.club_administrator_id = club_administrators.id
-         join users as admin_user on club_administrators.id = admin_user.id
-         join coaches on clubs.coach_id = coaches.id
-         join users as coach_user on coaches.id = coach_user.id
-         join players on clubs.player_id = players.id
-         join users as player_user on players.id = player_user.id;
+-- Devuelve todos los usuarios con sus roles verificando tablas específicas de roles
+SELECT u.id,
+       u.name,
+       u.last_name,
+       u.email,
+       u.username,
+       CASE
+           WHEN ca.id IS NOT NULL THEN 'Club Administrator'
+           WHEN c.id IS NOT NULL THEN 'Coach'
+           WHEN p.id IS NOT NULL THEN 'Player'
+           ELSE 'System Administrator'
+           END AS role
+FROM users u
+         LEFT JOIN club_administrators ca ON ca.id = u.id
+         LEFT JOIN coaches c ON c.id = u.id
+         LEFT JOIN players p ON p.id = u.id;
 
--- Obtiene la cantidad de entrenadores y jugadores asociados a un club
-select clubs.name                 as club_name,
-       count(distinct coaches.id) as total_coaches,
-       count(distinct players.id) as total_players
-from clubs
-         left join coaches on clubs.id = coaches.club_id
-         left join players on clubs.id = players.club_id
-group by clubs.name;
+-- Devuelve los detalles del club con la información asociada del administrador, entrenador y jugador.
+SELECT cl.id   AS club_id,
+       cl.name AS club_name,
+       cl.address,
+       cl.phone_number,
+       ca.id   AS admin_id,
+       ua.name AS admin_name,
+       c.id    AS coach_id,
+       uc.name AS coach_name,
+       p.id    AS player_id,
+       up.name AS player_name
+FROM clubs cl
+         LEFT JOIN club_administrators ca ON cl.club_administrator_id = ca.id
+         LEFT JOIN users ua ON ca.id = ua.id
+         LEFT JOIN coaches c ON cl.coach_id = c.id
+         LEFT JOIN users uc ON c.id = uc.id
+         LEFT JOIN players p ON cl.player_id = p.id
+         LEFT JOIN users up ON p.id = up.id
+WHERE cl.enabled = 1;
 
--- Obtiene el club asociado a cada usuario según su rol
-select distinct u.name         as user_name,
-                u.email        as user_email,
-                r.name         as role_name,
-                c.name         as club_name,
-                c.address      as club_address,
-                c.phone_number as club_phone_number
-from users u
-         join users_roles ur on u.id = ur.user_id
-         join roles r on ur.role_id = r.id
-         left join club_administrators ca on u.id = ca.id
-         left join coaches co on u.id = co.id
-         left join players p on u.id = p.id
-         left join clubs c on c.id = co.club_id or c.id = p.club_id or c.id = ca.club_id
-order by r.name, u.name;
+-- Devuelve el recuento de usuarios por rol
+SELECT 'Club Administrators' as role, COUNT(*)
+FROM club_administrators
+UNION
+SELECT 'Coaches', COUNT(*)
+FROM coaches
+UNION
+SELECT 'Players', COUNT(*)
+FROM players;
 
-select clubs.id           as club_id,
-       clubs.name         as club_name,
-       clubs.address      as club_address,
-       clubs.phone_number as club_phone_number,
-       users.name         as player_name,
-       users.email        as player_email
-from clubs
-         join players on clubs.id = players.club_id
-         join users on players.id = users.id
-order by clubs.name, users.name;
+-- Devoluciones de clubes habilitados ordenados por fecha de creación
+SELECT id, name, address, phone_number, enabled, creation_date
+FROM clubs
+ORDER BY creation_date DESC;
+
+-- Devuelve los usuarios que no están en estado ACTIVO
+SELECT id, name, last_name, email, username, affiliation_status
+FROM users
+WHERE affiliation_status <> 'ACTIVE';
+
+-- Devuelve correos electrónicos que aparecen más de una vez
+SELECT email, COUNT(*) as times_used
+FROM users
+GROUP BY email
+HAVING COUNT(*) > 1;
+
+-- Devuelve números de teléfono que aparecen más de una vez
+SELECT phone_number, COUNT(*) as times_used
+FROM users
+GROUP BY phone_number
+HAVING COUNT(*) > 1;
+
+-- Devuelve información del jugador con su club asociado.
+SELECT u.id   AS player_id,
+       u.name AS player_name,
+       u.last_name,
+       c.id   AS club_id,
+       c.name AS club_name
+FROM players p
+         JOIN users u ON u.id = p.id
+         LEFT JOIN clubs c ON p.club_id = c.id;
+
+-- Devuelve las estadísticas del club que muestran el número de miembros por rol.
+SELECT c.id                                                                  AS club_id,
+       c.name                                                                AS club_name,
+       (SELECT COUNT(*) FROM club_administrators ca WHERE ca.club_id = c.id) AS administrators,
+       (SELECT COUNT(*) FROM coaches co WHERE co.club_id = c.id)             AS coaches,
+       (SELECT COUNT(*) FROM players p WHERE p.club_id = c.id)               AS players
+FROM clubs c;
+
+-- Obtener todos los eventos
+SELECT *
+FROM events;
+
+-- Buscar eventos públicos ordenados por fecha de inicio (más próximos primero)
+SELECT id, name, location, start_date, end_date
+FROM events
+WHERE event_visibility = 'PUBLIC'
+ORDER BY start_date;
+
+-- Contar la cantidad de eventos según visibilidad
+SELECT event_visibility, COUNT(*) AS cantidad
+FROM events
+GROUP BY event_visibility;
+
+-- Obtener los eventos que tienen más de 50 participantes permitidos
+SELECT id, name, maximum_participants
+FROM events
+WHERE maximum_participants > 50;
+
+-- Buscar eventos activos al día de hoy
+SELECT id, name, start_date, end_date
+FROM events
+WHERE NOW() BETWEEN start_date AND end_date;
+
+-- Buscar eventos que ya han terminado
+SELECT id, name, end_date
+FROM events
+WHERE end_date < NOW();
+
+-- Buscar eventos por nombre (ejemplo parcial)
+SELECT *
+FROM events
+WHERE name LIKE '%torneo%';
+
+-- Listar los nombres de eventos con su duración en días
+SELECT id, name, DATEDIFF(end_date, start_date) AS duracion_dias
+FROM events;
+
+-- Obtener la cantidad máxima de participantes permitidos en todos los eventos privados
+SELECT MAX(maximum_participants) AS max_participantes_privados
+FROM events
+WHERE event_visibility = 'PRIVATE';
+
+-- Mostrar eventos y el número de jugadores inscritos (requiere tabla players_events)
+SELECT e.id, e.name, COUNT(pe.player_id) AS inscritos
+FROM events e
+         LEFT JOIN players_events pe ON e.id = pe.event_id
+GROUP BY e.id, e.name;

@@ -1,6 +1,21 @@
 # Deshabilita las comprobaciones de claves foráneas para evitar errores al crear tablas
 set foreign_key_checks = 0;
 
+# borrar todas las tablas (SOLO PARA PRUEBAS)
+drop table if exists players_events;
+drop table if exists tournaments;
+drop table if exists trainings;
+drop table if exists club_administrators;
+drop table if exists coaches;
+drop table if exists players;
+drop table if exists clubs;
+drop table if exists roles_authorities;
+drop table if exists users_roles;
+drop table if exists roles;
+drop table if exists authorities;
+drop table if exists events;
+drop table if exists users;
+
 create table if not exists users
 (
     id                      bigint auto_increment,
@@ -140,6 +155,15 @@ create table if not exists trainings
     primary key (id),
     constraint fk_training_events_id
         foreign key (id) references events (id)
+);
+
+create table if not exists players_events
+(
+    player_id bigint not null,
+    event_id  bigint not null,
+    primary key (player_id, event_id),
+    constraint players_events_player_id foreign key (player_id) references players (id),
+    constraint players_events_event_id foreign key (event_id) references events (id)
 );
 
 # Habilita las comprobaciones de claves foráneas de nuevo para evitar errores al crear tablas

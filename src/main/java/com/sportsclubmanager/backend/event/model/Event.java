@@ -1,15 +1,23 @@
 package com.sportsclubmanager.backend.event.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.sportsclubmanager.backend.member.model.Player;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 import java.io.Serial;
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
 
 @Data
+@EqualsAndHashCode(exclude = {"players"})
+@ToString(exclude = {"players"})
 @Entity
 @Table(name = "events")
 @Inheritance(strategy = InheritanceType.JOINED)
@@ -50,4 +58,8 @@ public abstract class Event implements Serializable {
     @NotNull
     @Column(name = "maximum_participants", nullable = false)
     private Integer maximumParticipants;
+
+    @JsonIgnoreProperties(value = {"events", "club"})
+    @ManyToMany(mappedBy = "events")
+    private Set<Player> players = new HashSet<>();
 }

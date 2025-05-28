@@ -591,5 +591,13 @@ insert into trainings(id)
 values (3),
        (4);
 
+insert into players_events(player_id, event_id)
+values (12, 1),
+       (12, 2),
+       (13, 2),
+       (14, 3),
+       (15, 4),
+       (16, 4);
+
 # Habilita las comprobaciones de claves foráneas de nuevo para evitar errores al crear tablas
 set foreign_key_checks = 1;

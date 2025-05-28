@@ -17,8 +17,8 @@ import com.sportsclubmanager.backend.member.model.ClubAdministrator;
 import com.sportsclubmanager.backend.member.model.Player;
 import com.sportsclubmanager.backend.member.repository.ClubAdministratorRepository;
 import com.sportsclubmanager.backend.member.repository.PlayerRepository;
-import com.sportsclubmanager.backend.shared.exception.ClubAlreadyHasPlayerException;
-import com.sportsclubmanager.backend.shared.exception.PlayerAlreadyHasClubException;
+import com.sportsclubmanager.backend.member.exception.ClubAlreadyHasPlayerException;
+import com.sportsclubmanager.backend.member.exception.PlayerAlreadyHasClubException;
 import com.sportsclubmanager.backend.shared.exception.ResourceNotFoundException;
 import com.sportsclubmanager.backend.shared.util.RoleAuthorityUtils;
 import com.sportsclubmanager.backend.user.dto.UserUpdateRequest;
@@ -134,10 +134,10 @@ public class ClubAdministratorService implements UserService<ClubAdministrator> 
      */
     public void linkPlayerToClub(Long clubId, Long playerId) {
         Club club = clubRepository.findById(clubId)
-                .orElseThrow(() -> new ResourceNotFoundException("Club not found with ID:" + clubId));
+                .orElseThrow(() -> new ResourceNotFoundException("Club not found with ID: " + clubId));
 
         Player player = playerRepository.findById(playerId)
-                .orElseThrow(() -> new ResourceNotFoundException("Player not found with ID:" + playerId));
+                .orElseThrow(() -> new ResourceNotFoundException("Player not found with ID: " + playerId));
 
         if (club.getPlayers().contains(player)) {
             throw new ClubAlreadyHasPlayerException(
