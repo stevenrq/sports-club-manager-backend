@@ -26,7 +26,7 @@ import java.lang.annotation.Target;
 @Target({ METHOD, FIELD, ANNOTATION_TYPE, CONSTRUCTOR, PARAMETER, TYPE_USE })
 @Retention(RetentionPolicy.RUNTIME)
 public @interface PasswordStrength {
-    String message() default "Password must contain at least one lowercase letter, one uppercase letter, one digit, one special character and must be at least 6 characters long";
+    String message() default "La contraseña debe contener al menos una letra minúscula, una letra mayúscula, un dígito, un carácter especial y debe tener al menos 6 caracteres.";
 
     Class<?>[] groups() default {};
 

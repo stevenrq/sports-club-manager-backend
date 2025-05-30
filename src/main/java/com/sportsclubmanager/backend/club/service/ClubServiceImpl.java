@@ -41,7 +41,7 @@ public class ClubServiceImpl implements ClubService {
     public Club save(Club club, Long clubAdminId) {
         if (clubAdminId == null) {
             throw new IllegalArgumentException(
-                "Club Administrator ID must not be null"
+                "El ID del administrador del club no debe ser nulo"
             );
         }
 
@@ -49,14 +49,15 @@ public class ClubServiceImpl implements ClubService {
             clubAdministratorService.findById(clubAdminId);
         if (clubAdminOptional.isEmpty()) {
             throw new IllegalArgumentException(
-                "Club Administrator with ID " + clubAdminId + " not found"
+                "No se encontró un administrador de club con el ID " +
+                clubAdminId
             );
         }
 
         ClubAdministrator clubAdmin = clubAdminOptional.orElseThrow();
         if (clubAdmin.getClub() != null) {
             throw new IllegalArgumentException(
-                "Club Administrator already has a club assigned with ID " +
+                "El administrador de club ya tiene un club asignado con el ID " +
                 clubAdmin.getClub().getId()
             );
         }
@@ -120,7 +121,7 @@ public class ClubServiceImpl implements ClubService {
                     .getPlayers()
                     .forEach(player -> player.setClub(null));
             } catch (Exception e) {
-                throw new ClubDeletingException("Error while deleting club", e);
+                throw new ClubDeletingException("Error al eliminar el club", e);
             }
             clubRepository.deleteById(id);
         }

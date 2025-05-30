@@ -152,7 +152,7 @@ public class ClubAdministratorService
             .findById(clubId)
             .orElseThrow(() ->
                 new ResourceNotFoundException(
-                    "Club not found with ID: " + clubId
+                    "Club no encontrado con ID: " + clubId
                 )
             );
 
@@ -160,21 +160,21 @@ public class ClubAdministratorService
             .findById(playerId)
             .orElseThrow(() ->
                 new ResourceNotFoundException(
-                    "Player not found with ID: " + playerId
+                    "Jugador no encontrado con ID: " + playerId
                 )
             );
 
         if (club.getPlayers().contains(player)) {
             throw new ClubAlreadyHasPlayerException(
-                "Club with ID: " +
+                "Club con ID: " +
                 clubId +
-                " has already player with ID: " +
+                " ya tiene al jugador con ID: " +
                 playerId +
-                " associated"
+                " asociado"
             );
         } else if (player.getClub() != null) {
             throw new PlayerAlreadyHasClubException(
-                "Player with ID: " + playerId + " has already a club associated"
+                "Jugador con ID: " + playerId + " ya tiene un club asociado"
             );
         }
 

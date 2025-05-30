@@ -27,7 +27,7 @@ public class ValidationService {
         BindingResult bindingResult
     ) {
         if (!(target instanceof User || target instanceof UserUpdateRequest)) {
-            throw new IllegalArgumentException("Invalid target type");
+            throw new IllegalArgumentException("Tipo de objeto no válido");
         }
 
         Map<String, String> errors = validate(target);
@@ -55,7 +55,7 @@ public class ValidationService {
         ApiResponse<PlayerResponse>
     > handlePlayerValidation(T target, BindingResult bindingResult) {
         if (!(target instanceof User || target instanceof UserUpdateRequest)) {
-            throw new IllegalArgumentException("Invalid target type");
+            throw new IllegalArgumentException("Tipo de objeto no válido");
         }
 
         Map<String, String> errors = validate(target);
@@ -99,10 +99,7 @@ public class ValidationService {
         bindingResult
             .getFieldErrors()
             .forEach(error ->
-                errors.put(
-                    error.getField(),
-                    error.getField() + " field: " + error.getDefaultMessage()
-                )
+                errors.put(error.getField(), error.getDefaultMessage())
             );
 
         return validationError(errors);
@@ -142,18 +139,20 @@ public class ValidationService {
                 phoneNumber = u.getPhoneNumber();
             }
             case UserUpdateRequest ur -> phoneNumber = ur.getPhoneNumber();
-            default -> throw new IllegalArgumentException("Invalid user type");
+            default -> throw new IllegalArgumentException(
+                "Tipo de usuario no válido"
+            );
         }
 
         if (!isValidLength(nationalId, 7, 10) && user instanceof User) {
             validationsMessage.put(
                 "nationalId",
-                "National id must be between 7 and 10 digits"
+                "El ID nacional debe tener entre 7 y 10 dígitos"
             );
         } else if (!isValidLength(phoneNumber, 10, 10)) {
             validationsMessage.put(
                 "phoneNumber",
-                "Phone number must be 10 digits"
+                "El número de teléfono debe tener 10 dígitos"
             );
         }
 

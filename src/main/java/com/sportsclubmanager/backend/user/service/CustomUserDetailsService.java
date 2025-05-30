@@ -41,7 +41,7 @@ public class CustomUserDetailsService implements UserDetailsService {
 
         if (userOptional.isEmpty()) {
             throw new UsernameNotFoundException(
-                "User not found with username: " + username
+                "Usuario no encontrado con nombre de usuario: " + username
             );
         }
 

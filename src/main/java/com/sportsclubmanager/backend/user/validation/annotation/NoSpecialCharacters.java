@@ -20,7 +20,7 @@ import java.lang.annotation.Target;
 @Target({ METHOD, FIELD, ANNOTATION_TYPE, CONSTRUCTOR, PARAMETER, TYPE_USE })
 @Retention(RetentionPolicy.RUNTIME)
 public @interface NoSpecialCharacters {
-    String message() default "Special characters are not allowed";
+    String message() default "El campo no puede contener caracteres especiales.";
 
     Class<?>[] groups() default {};
 

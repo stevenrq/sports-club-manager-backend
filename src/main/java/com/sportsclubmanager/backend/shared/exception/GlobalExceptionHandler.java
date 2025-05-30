@@ -17,23 +17,30 @@ public class GlobalExceptionHandler {
     private static final Logger logger = LoggerFactory.getLogger(
         GlobalExceptionHandler.class
     );
-    private static final String MESSAGE_KEY = "message";
-    private static final String DETAILS_KEY = "details";
-    private static final String STATUS_KEY = "status";
+    private static final String MESSAGE_KEY = "mensaje";
+    private static final String DETAILS_KEY = "detalles";
+    private static final String STATUS_KEY = "estado";
 
     @ExceptionHandler(ConstraintViolationException.class)
     public ResponseEntity<Object> handleConstraintViolationException(
         ConstraintViolationException e
     ) {
-        logger.error("Constraint violation occurred: {}", e.getMessage(), e);
+        logger.error(
+            "Se produjo una violación de restricción: {}",
+            e.getMessage(),
+            e
+        );
 
         Map<String, Object> errorResponse = new HashMap<>();
         errorResponse.put(
             MESSAGE_KEY,
-            "Constraint violation occurred. Check unique fields."
+            "Se produjo una violación de restricción. Verifique los campos únicos."
         );
         errorResponse.put(DETAILS_KEY, e.getMessage());
-        errorResponse.put("constraint violations", e.getConstraintViolations());
+        errorResponse.put(
+            "violaciones de restricción",
+            e.getConstraintViolations()
+        );
         errorResponse.put(STATUS_KEY, HttpStatus.CONFLICT.value());
 
         return new ResponseEntity<>(errorResponse, HttpStatus.CONFLICT);
@@ -44,7 +51,7 @@ public class GlobalExceptionHandler {
         DataIntegrityViolationException e
     ) {
         logger.error(
-            "Data integrity violation occurred: {}",
+            "Se produjo una violación de integridad de datos: {}",
             e.getMessage(),
             e
         );
@@ -52,7 +59,7 @@ public class GlobalExceptionHandler {
         Map<String, Object> errorResponse = new HashMap<>();
         errorResponse.put(
             MESSAGE_KEY,
-            "Data integrity violation occurred. Check unique fields."
+            "Se produjo una violación de integridad de datos. Verifique los campos únicos."
         );
         errorResponse.put(DETAILS_KEY, e.getMessage());
         errorResponse.put(STATUS_KEY, HttpStatus.CONFLICT.value());
@@ -62,11 +69,11 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Object> handleGeneralException(Exception e) {
-        logger.error("An unexpected error occurred: {}", e.getMessage(), e);
+        logger.error("Se produjo un error inesperado: {}", e.getMessage(), e);
 
         Map<String, Object> errorResponse = new HashMap<>();
-        errorResponse.put("exception type", e.getClass().getSimpleName());
-        errorResponse.put(MESSAGE_KEY, "An unexpected error occurred.");
+        errorResponse.put("tipo de excepción", e.getClass().getSimpleName());
+        errorResponse.put(MESSAGE_KEY, "Se produjo un error inesperado.");
         errorResponse.put(DETAILS_KEY, e.getMessage());
         errorResponse.put(STATUS_KEY, HttpStatus.INTERNAL_SERVER_ERROR.value());
 

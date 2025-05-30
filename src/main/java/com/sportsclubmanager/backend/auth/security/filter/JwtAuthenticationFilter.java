@@ -32,7 +32,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class JwtAuthenticationFilter
     extends UsernamePasswordAuthenticationFilter {
 
-    private final Logger logger = LoggerFactory.getLogger(
+    private final Logger log = LoggerFactory.getLogger(
         JwtAuthenticationFilter.class
     );
 
@@ -73,8 +73,8 @@ public class JwtAuthenticationFilter
             username = user.getUsername();
             password = user.getPassword();
         } catch (IOException e) {
-            logger.error(
-                "Failed to parse user data from the request. Please ensure the JSON is properly formatted. Error: {}",
+            log.error(
+                "No se pudieron analizar los datos del usuario de la solicitud. Asegúrese de que el formato JSON sea correcto. Error: {}",
                 e.getMessage()
             );
         }
@@ -150,7 +150,7 @@ public class JwtAuthenticationFilter
         AuthenticationException failed
     ) throws IOException, ServletException {
         Map<String, String> body = new HashMap<>();
-        body.put("message", "Login failed");
+        body.put("mensaje", "Login fallido");
         body.put("error", failed.getMessage());
 
         response.getWriter().write(new ObjectMapper().writeValueAsString(body));

@@ -146,7 +146,7 @@ public class PlayerService implements UserService<Player> {
 
         if (playerOptional.isEmpty()) {
             throw new IllegalArgumentException(
-                "Player with ID " + playerId + " not found"
+                "Jugador con ID " + playerId + " no encontrado"
             );
         } else {
             player = playerOptional.orElseThrow();
@@ -154,7 +154,9 @@ public class PlayerService implements UserService<Player> {
 
         if (tournamentOptional.isEmpty()) {
             throw new IllegalArgumentException(
-                "Tournament event with ID " + tournamentEventId + " not found"
+                "Evento de torneo con ID " +
+                tournamentEventId +
+                " no encontrado"
             );
         } else {
             tournament = tournamentOptional.orElseThrow();
@@ -162,11 +164,11 @@ public class PlayerService implements UserService<Player> {
 
         if (player.getEvents().contains(tournament)) {
             throw new PlayerAlreadyHasTournamentEventException(
-                "Player with ID: " +
+                "Jugador con ID: " +
                 playerId +
-                " has already tournament event with ID: " +
+                " ya tiene evento de torneo con ID: " +
                 tournament.getId() +
-                " associated"
+                " asociado"
             );
         }
         if (
@@ -174,7 +176,7 @@ public class PlayerService implements UserService<Player> {
             tournament.getMaximumParticipants()
         ) {
             throw new MaximumParticipantsException(
-                "The participants must not be greater than > " +
+                "Los participantes no deben ser mayores que " +
                 tournament.getMaximumParticipants()
             );
         }
@@ -214,7 +216,7 @@ public class PlayerService implements UserService<Player> {
 
         if (playerOptional.isEmpty()) {
             throw new IllegalArgumentException(
-                "Player with ID " + playerId + " not found"
+                "Jugador con ID " + playerId + " no encontrado"
             );
         } else {
             player = playerOptional.orElseThrow();
@@ -222,7 +224,9 @@ public class PlayerService implements UserService<Player> {
 
         if (trainingOptional.isEmpty()) {
             throw new IllegalArgumentException(
-                "Training event with ID " + trainingEventId + " not found"
+                "Evento de entrenamiento con ID " +
+                trainingEventId +
+                " no encontrado"
             );
         } else {
             training = trainingOptional.orElseThrow();
@@ -230,17 +234,17 @@ public class PlayerService implements UserService<Player> {
 
         if (player.getEvents().contains(training)) {
             throw new PlayerAlreadyHasTrainingEventException(
-                "Player with ID: " +
+                "Jugador con ID: " +
                 playerId +
-                " has already training event with ID: " +
+                " ya tiene evento de entrenamiento con ID: " +
                 training.getId() +
-                " associated"
+                " asociado"
             );
         }
 
         if (training.getPlayers().size() >= training.getMaximumParticipants()) {
             throw new MaximumParticipantsException(
-                "The participants must not be greater than > " +
+                "Los participantes no deben ser mayores que " +
                 training.getMaximumParticipants()
             );
         }

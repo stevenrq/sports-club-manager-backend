@@ -42,7 +42,7 @@ public class RoleAuthorityUtils {
      * @throws NullPointerException Si el conjunto de roles proporcionado es nulo.
      */
     public static Set<String> getRolesAndAuthorities(Set<Role> roles) {
-        Objects.requireNonNull(roles, "The role set must not be null.");
+        Objects.requireNonNull(roles, "La colección de roles no debe ser nula");
 
         return Stream.concat(
             roles.stream().map(Role::getName),
@@ -127,11 +127,14 @@ public class RoleAuthorityUtils {
                 }
             }
         } catch (NoSuchElementException e) {
-            throw new RoleRetrievalException("Error retrieving roles", e);
+            throw new RoleRetrievalException("Error al recuperar roles", e);
         } catch (IllegalArgumentException e) {
-            throw new RoleRetrievalException("Invalid role name", e);
+            throw new RoleRetrievalException("Nombre de rol inválido", e);
         } catch (Exception e) {
-            throw new RoleRetrievalException("An unexpected error occurred", e);
+            throw new RoleRetrievalException(
+                "Se produjo un error inesperado",
+                e
+            );
         }
         return roles;
     }
@@ -169,12 +172,17 @@ public class RoleAuthorityUtils {
                     roleOptional.ifPresent(roles::add);
                 }
             } else {
-                throw new NullPointerException("User roles must not be null");
+                throw new NullPointerException(
+                    "Los roles de usuario no deben ser nulos"
+                );
             }
         } catch (NoSuchElementException e) {
-            throw new RoleRetrievalException("Error retrieving roles", e);
+            throw new RoleRetrievalException("Error al recuperar roles", e);
         } catch (Exception e) {
-            throw new RoleRetrievalException("An unexpected error occurred", e);
+            throw new RoleRetrievalException(
+                "Se produjo un error inesperado",
+                e
+            );
         }
         return roles;
     }
