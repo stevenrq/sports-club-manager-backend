@@ -12,9 +12,13 @@ import java.io.Serial;
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = "users")
 @Inheritance(strategy = InheritanceType.JOINED)
@@ -28,6 +32,7 @@ public class User implements Serializable {
     private Long id;
 
     @NotNull
+    @Size(min = 7, max = 10)
     @Column(name = "national_id", nullable = false, unique = true, length = 10)
     private Long nationalId;
 
