@@ -133,15 +133,13 @@ public class ValidationService {
         Long nationalId = 0L;
         Long phoneNumber;
 
-        switch (user) {
-            case User u -> {
-                nationalId = u.getNationalId();
-                phoneNumber = u.getPhoneNumber();
-            }
-            case UserUpdateRequest ur -> phoneNumber = ur.getPhoneNumber();
-            default -> throw new IllegalArgumentException(
-                "Tipo de usuario no válido"
-            );
+        if (user instanceof User u) {
+            nationalId = u.getNationalId();
+            phoneNumber = u.getPhoneNumber();
+        } else if (user instanceof UserUpdateRequest ur) {
+            phoneNumber = ur.getPhoneNumber();
+        } else {
+            throw new IllegalArgumentException("Tipo de usuario no válido");
         }
 
         if (!isValidLength(nationalId, 7, 10) && user instanceof User) {

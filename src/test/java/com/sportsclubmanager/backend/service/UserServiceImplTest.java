@@ -463,7 +463,7 @@ class UserServiceImplTest {
                 ),
             // Validar campos del primer usuario de la lista
             () -> {
-                User first = result.getFirst();
+                User first = result.get(0);
                 assertEquals(
                     "John",
                     first.getName(),
