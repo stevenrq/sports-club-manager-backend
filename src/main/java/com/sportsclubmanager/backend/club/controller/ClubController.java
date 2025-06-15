@@ -23,9 +23,8 @@ public class ClubController {
     private final ClubMapper clubMapper;
 
     public ClubController(
-        @Qualifier("clubServiceImpl") ClubService clubService,
-        ClubMapper clubMapper
-    ) {
+            @Qualifier("clubServiceImpl") ClubService clubService,
+            ClubMapper clubMapper) {
         this.clubService = clubService;
         this.clubMapper = clubMapper;
     }
@@ -33,9 +32,8 @@ public class ClubController {
     @PostMapping("/club-administrator/{clubAdminId}")
     @PreAuthorize("hasAnyRole('CLUB_ADMIN', 'ADMIN')")
     public ResponseEntity<Club> create(
-        @RequestBody Club club,
-        @PathVariable Long clubAdminId
-    ) {
+            @RequestBody Club club,
+            @PathVariable Long clubAdminId) {
         return ResponseEntity.ok(clubService.save(club, clubAdminId));
     }
 
@@ -43,54 +41,50 @@ public class ClubController {
     @PreAuthorize("hasAnyRole('CLUB_ADMIN', 'ADMIN')")
     public ResponseEntity<ClubResponse> getById(@PathVariable Long id) {
         return clubService
-            .findById(id)
-            .map(club -> ResponseEntity.ok(clubMapper.toClubResponse(club)))
-            .orElse(ResponseEntity.notFound().build());
+                .findById(id)
+                .map(club -> ResponseEntity.ok(clubMapper.toClubResponse(club)))
+                .orElse(ResponseEntity.notFound().build());
     }
 
     @GetMapping("/name/{name}")
     @PreAuthorize("hasAnyRole('CLUB_ADMIN', 'ADMIN')")
     public ResponseEntity<ClubResponse> getByName(@PathVariable String name) {
         return clubService
-            .findByName(name)
-            .map(club -> ResponseEntity.ok(clubMapper.toClubResponse(club)))
-            .orElse(ResponseEntity.notFound().build());
+                .findByName(name)
+                .map(club -> ResponseEntity.ok(clubMapper.toClubResponse(club)))
+                .orElse(ResponseEntity.notFound().build());
     }
 
     @GetMapping
     @PreAuthorize("hasAnyRole('CLUB_ADMIN', 'ADMIN')")
     public ResponseEntity<List<ClubResponse>> getAll() {
         return ResponseEntity.ok(
-            clubService
-                .findAll()
-                .stream()
-                .map(clubMapper::toClubResponse)
-                .toList()
-        );
+                clubService
+                        .findAll()
+                        .stream()
+                        .map(clubMapper::toClubResponse)
+                        .toList());
     }
 
     @GetMapping("/page/{page}")
     @PreAuthorize("hasAnyRole('CLUB_ADMIN', 'ADMIN')")
     public ResponseEntity<Page<ClubResponse>> getAllPaginated(
-        @PathVariable Integer page
-    ) {
+            @PathVariable Integer page) {
         return ResponseEntity.ok(
-            clubService
-                .findAll(PageRequest.of(page, 5))
-                .map(clubMapper::toClubResponse)
-        );
+                clubService
+                        .findAll(PageRequest.of(page, 5))
+                        .map(clubMapper::toClubResponse));
     }
 
     @PutMapping("/{id}")
     @PreAuthorize("hasAnyRole('CLUB_ADMIN', 'ADMIN')")
     public ResponseEntity<ClubResponse> update(
-        @PathVariable Long id,
-        @RequestBody ClubUpdateRequest clubUpdateRequest
-    ) {
+            @PathVariable Long id,
+            @RequestBody ClubUpdateRequest clubUpdateRequest) {
         return clubService
-            .update(id, clubUpdateRequest)
-            .map(club -> ResponseEntity.ok(clubMapper.toClubResponse(club)))
-            .orElse(ResponseEntity.notFound().build());
+                .update(id, clubUpdateRequest)
+                .map(club -> ResponseEntity.ok(clubMapper.toClubResponse(club)))
+                .orElse(ResponseEntity.notFound().build());
     }
 
     @DeleteMapping("/{id}")

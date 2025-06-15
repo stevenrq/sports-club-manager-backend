@@ -33,12 +33,11 @@ public class PlayerService implements UserService<Player> {
     private final PasswordEncoder passwordEncoder;
 
     public PlayerService(
-        PlayerRepository playerRepository,
-        RoleRepository roleRepository,
-        TournamentRepository tournamentRepository,
-        TrainingRepository trainingRepository,
-        PasswordEncoder passwordEncoder
-    ) {
+            PlayerRepository playerRepository,
+            RoleRepository roleRepository,
+            TournamentRepository tournamentRepository,
+            TrainingRepository trainingRepository,
+            PasswordEncoder passwordEncoder) {
         this.playerRepository = playerRepository;
         this.roleRepository = roleRepository;
         this.tournamentRepository = tournamentRepository;
@@ -76,9 +75,8 @@ public class PlayerService implements UserService<Player> {
 
     @Override
     public Optional<Player> update(
-        Long id,
-        UserUpdateRequest userUpdateRequest
-    ) {
+            Long id,
+            UserUpdateRequest userUpdateRequest) {
         Optional<Player> playerOptional = playerRepository.findById(id);
 
         if (playerOptional.isPresent()) {
@@ -90,8 +88,7 @@ public class PlayerService implements UserService<Player> {
             playerUpdated.setEmail(userUpdateRequest.getEmail());
             playerUpdated.setUsername(userUpdateRequest.getUsername());
             playerUpdated.setRoles(
-                RoleAuthorityUtils.getRoles(playerUpdated, roleRepository)
-            );
+                    RoleAuthorityUtils.getRoles(playerUpdated, roleRepository));
 
             return Optional.of(playerRepository.save(playerUpdated));
         }
@@ -105,9 +102,8 @@ public class PlayerService implements UserService<Player> {
 
     @Override
     public boolean updateAffiliationStatus(
-        Long id,
-        AffiliationStatus affiliationStatus
-    ) {
+            Long id,
+            AffiliationStatus affiliationStatus) {
         Optional<Player> playerOptional = playerRepository.findById(id);
 
         if (playerOptional.isPresent()) {
@@ -133,52 +129,43 @@ public class PlayerService implements UserService<Player> {
      *                                                  máximo de participantes
      */
     public boolean registerInTournamentEvent(
-        Long playerId,
-        Long tournamentEventId
-    ) {
+            Long playerId,
+            Long tournamentEventId) {
         Optional<Player> playerOptional = playerRepository.findById(playerId);
         Optional<Tournament> tournamentOptional = tournamentRepository.findById(
-            tournamentEventId
-        );
+                tournamentEventId);
 
         Player player;
         Tournament tournament;
 
         if (playerOptional.isEmpty()) {
             throw new IllegalArgumentException(
-                "Jugador con ID " + playerId + " no encontrado"
-            );
+                    "Jugador con ID " + playerId + " no encontrado");
         } else {
             player = playerOptional.orElseThrow();
         }
 
         if (tournamentOptional.isEmpty()) {
             throw new IllegalArgumentException(
-                "Evento de torneo con ID " +
-                tournamentEventId +
-                " no encontrado"
-            );
+                    "Evento de torneo con ID " +
+                            tournamentEventId +
+                            " no encontrado");
         } else {
             tournament = tournamentOptional.orElseThrow();
         }
 
         if (player.getEvents().contains(tournament)) {
             throw new PlayerAlreadyHasTournamentEventException(
-                "Jugador con ID: " +
-                playerId +
-                " ya tiene evento de torneo con ID: " +
-                tournament.getId() +
-                " asociado"
-            );
+                    "Jugador con ID: " +
+                            playerId +
+                            " ya tiene evento de torneo con ID: " +
+                            tournament.getId() +
+                            " asociado");
         }
-        if (
-            tournament.getPlayers().size() >=
-            tournament.getMaximumParticipants()
-        ) {
+        if (tournament.getPlayers().size() >= tournament.getMaximumParticipants()) {
             throw new MaximumParticipantsException(
-                "Los participantes no deben ser mayores que " +
-                tournament.getMaximumParticipants()
-            );
+                    "Los participantes no deben ser mayores que " +
+                            tournament.getMaximumParticipants());
         }
 
         player.getEvents().add(tournament);
@@ -203,50 +190,44 @@ public class PlayerService implements UserService<Player> {
      *                                                el máximo de participantes
      */
     public boolean registerInTrainingEvent(
-        Long playerId,
-        Long trainingEventId
-    ) {
+            Long playerId,
+            Long trainingEventId) {
         Optional<Player> playerOptional = playerRepository.findById(playerId);
         Optional<Training> trainingOptional = trainingRepository.findById(
-            trainingEventId
-        );
+                trainingEventId);
 
         Player player;
         Training training;
 
         if (playerOptional.isEmpty()) {
             throw new IllegalArgumentException(
-                "Jugador con ID " + playerId + " no encontrado"
-            );
+                    "Jugador con ID " + playerId + " no encontrado");
         } else {
             player = playerOptional.orElseThrow();
         }
 
         if (trainingOptional.isEmpty()) {
             throw new IllegalArgumentException(
-                "Evento de entrenamiento con ID " +
-                trainingEventId +
-                " no encontrado"
-            );
+                    "Evento de entrenamiento con ID " +
+                            trainingEventId +
+                            " no encontrado");
         } else {
             training = trainingOptional.orElseThrow();
         }
 
         if (player.getEvents().contains(training)) {
             throw new PlayerAlreadyHasTrainingEventException(
-                "Jugador con ID: " +
-                playerId +
-                " ya tiene evento de entrenamiento con ID: " +
-                training.getId() +
-                " asociado"
-            );
+                    "Jugador con ID: " +
+                            playerId +
+                            " ya tiene evento de entrenamiento con ID: " +
+                            training.getId() +
+                            " asociado");
         }
 
         if (training.getPlayers().size() >= training.getMaximumParticipants()) {
             throw new MaximumParticipantsException(
-                "Los participantes no deben ser mayores que " +
-                training.getMaximumParticipants()
-            );
+                    "Los participantes no deben ser mayores que " +
+                            training.getMaximumParticipants());
         }
 
         player.getEvents().add(training);

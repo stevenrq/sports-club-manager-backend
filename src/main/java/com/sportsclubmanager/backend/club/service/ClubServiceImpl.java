@@ -20,9 +20,8 @@ public class ClubServiceImpl implements ClubService {
     private final ClubRepository clubRepository;
 
     public ClubServiceImpl(
-        ClubRepository clubRepository,
-        ClubAdministratorService clubAdministratorService
-    ) {
+            ClubRepository clubRepository,
+            ClubAdministratorService clubAdministratorService) {
         this.clubRepository = clubRepository;
         this.clubAdministratorService = clubAdministratorService;
     }
@@ -31,35 +30,34 @@ public class ClubServiceImpl implements ClubService {
      * Guarda un club en la base de datos y lo asocia con un administrador de club.
      *
      * @param club        El objeto `Club` que se desea guardar.
-     * @param clubAdminId El ID del administrador del club que se asociará con el club.
+     * @param clubAdminId El ID del administrador del club que se asociará con el
+     *                    club.
      * @return El objeto `Club` guardado en la base de datos.
      * @throws IllegalArgumentException Si el ID del administrador del club es nulo,
-     *                                  si no se encuentra un administrador con el ID proporcionado,
-     *                                  o si el administrador ya tiene un club asignado.
+     *                                  si no se encuentra un administrador con el
+     *                                  ID proporcionado,
+     *                                  o si el administrador ya tiene un club
+     *                                  asignado.
      */
     @Override
     public Club save(Club club, Long clubAdminId) {
         if (clubAdminId == null) {
             throw new IllegalArgumentException(
-                "El ID del administrador del club no debe ser nulo"
-            );
+                    "El ID del administrador del club no debe ser nulo");
         }
 
-        Optional<ClubAdministrator> clubAdminOptional =
-            clubAdministratorService.findById(clubAdminId);
+        Optional<ClubAdministrator> clubAdminOptional = clubAdministratorService.findById(clubAdminId);
         if (clubAdminOptional.isEmpty()) {
             throw new IllegalArgumentException(
-                "No se encontró un administrador de club con el ID " +
-                clubAdminId
-            );
+                    "No se encontró un administrador de club con el ID " +
+                            clubAdminId);
         }
 
         ClubAdministrator clubAdmin = clubAdminOptional.orElseThrow();
         if (clubAdmin.getClub() != null) {
             throw new IllegalArgumentException(
-                "El administrador de club ya tiene un club asignado con el ID " +
-                clubAdmin.getClub().getId()
-            );
+                    "El administrador de club ya tiene un club asignado con el ID " +
+                            clubAdmin.getClub().getId());
         }
 
         club.setClubAdministrator(clubAdmin);
@@ -107,7 +105,8 @@ public class ClubServiceImpl implements ClubService {
      * Elimina un club por su ID.
      *
      * @param id El ID del club a eliminar.
-     * @throws ClubDeletingException Si ocurre un error al desvincular las relaciones del club.
+     * @throws ClubDeletingException Si ocurre un error al desvincular las
+     *                               relaciones del club.
      */
     @Override
     public void deleteById(Long id) {
@@ -118,8 +117,8 @@ public class ClubServiceImpl implements ClubService {
                 clubToDelete.getClubAdministrator().setClub(null);
                 clubToDelete.getCoaches().forEach(coach -> coach.setClub(null));
                 clubToDelete
-                    .getPlayers()
-                    .forEach(player -> player.setClub(null));
+                        .getPlayers()
+                        .forEach(player -> player.setClub(null));
             } catch (Exception e) {
                 throw new ClubDeletingException("Error al eliminar el club", e);
             }

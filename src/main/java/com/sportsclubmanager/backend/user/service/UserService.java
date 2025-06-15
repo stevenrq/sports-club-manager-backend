@@ -30,7 +30,6 @@ public interface UserService<T> {
     void deleteById(Long id);
 
     boolean updateAffiliationStatus(
-        Long id,
-        AffiliationStatus affiliationStatus
-    );
+            Long id,
+            AffiliationStatus affiliationStatus);
 }

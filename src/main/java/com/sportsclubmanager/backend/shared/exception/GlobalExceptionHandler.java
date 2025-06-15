@@ -15,32 +15,27 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 public class GlobalExceptionHandler {
 
     private static final Logger logger = LoggerFactory.getLogger(
-        GlobalExceptionHandler.class
-    );
+            GlobalExceptionHandler.class);
     private static final String MESSAGE_KEY = "mensaje";
     private static final String DETAILS_KEY = "detalles";
     private static final String STATUS_KEY = "estado";
 
     @ExceptionHandler(ConstraintViolationException.class)
     public ResponseEntity<Object> handleConstraintViolationException(
-        ConstraintViolationException e
-    ) {
+            ConstraintViolationException e) {
         logger.error(
-            "Se produjo una violación de restricción: {}",
-            e.getMessage(),
-            e
-        );
+                "Se produjo una violación de restricción: {}",
+                e.getMessage(),
+                e);
 
         Map<String, Object> errorResponse = new HashMap<>();
         errorResponse.put(
-            MESSAGE_KEY,
-            "Se produjo una violación de restricción. Verifique los campos únicos."
-        );
+                MESSAGE_KEY,
+                "Se produjo una violación de restricción. Verifique los campos únicos.");
         errorResponse.put(DETAILS_KEY, e.getMessage());
         errorResponse.put(
-            "violaciones de restricción",
-            e.getConstraintViolations()
-        );
+                "violaciones de restricción",
+                e.getConstraintViolations());
         errorResponse.put(STATUS_KEY, HttpStatus.CONFLICT.value());
 
         return new ResponseEntity<>(errorResponse, HttpStatus.CONFLICT);
@@ -48,19 +43,16 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(DataIntegrityViolationException.class)
     public ResponseEntity<Object> handleDataIntegrityViolationException(
-        DataIntegrityViolationException e
-    ) {
+            DataIntegrityViolationException e) {
         logger.error(
-            "Se produjo una violación de integridad de datos: {}",
-            e.getMessage(),
-            e
-        );
+                "Se produjo una violación de integridad de datos: {}",
+                e.getMessage(),
+                e);
 
         Map<String, Object> errorResponse = new HashMap<>();
         errorResponse.put(
-            MESSAGE_KEY,
-            "Se produjo una violación de integridad de datos. Verifique los campos únicos."
-        );
+                MESSAGE_KEY,
+                "Se produjo una violación de integridad de datos. Verifique los campos únicos.");
         errorResponse.put(DETAILS_KEY, e.getMessage());
         errorResponse.put(STATUS_KEY, HttpStatus.CONFLICT.value());
 
@@ -78,8 +70,7 @@ public class GlobalExceptionHandler {
         errorResponse.put(STATUS_KEY, HttpStatus.INTERNAL_SERVER_ERROR.value());
 
         return new ResponseEntity<>(
-            errorResponse,
-            HttpStatus.INTERNAL_SERVER_ERROR
-        );
+                errorResponse,
+                HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }

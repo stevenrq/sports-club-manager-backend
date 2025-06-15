@@ -5,7 +5,8 @@ import javax.crypto.SecretKey;
 
 /**
  * Clase de configuración para el manejo de JSON Web Tokens (JWT).
- * Contiene constantes utilizadas en la autenticación y autorización mediante JWT.
+ * Contiene constantes utilizadas en la autenticación y autorización mediante
+ * JWT.
  */
 public class JwtConfig {
 
@@ -16,7 +17,8 @@ public class JwtConfig {
     public static final SecretKey SECRET_KEY = Jwts.SIG.HS256.key().build();
 
     /**
-     * Prefijo estándar que se agrega al token JWT en los encabezados de autorización.
+     * Prefijo estándar que se agrega al token JWT en los encabezados de
+     * autorización.
      */
     public static final String PREFIX_TOKEN = "Bearer ";
 
@@ -30,5 +32,6 @@ public class JwtConfig {
      */
     public static final String CONTENT_TYPE = "application/json";
 
-    private JwtConfig() {}
+    private JwtConfig() {
+    }
 }

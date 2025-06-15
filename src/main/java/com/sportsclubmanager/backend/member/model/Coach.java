@@ -18,14 +18,12 @@ import lombok.EqualsAndHashCode;
 @PrimaryKeyJoinColumn(referencedColumnName = "id")
 public class Coach extends User {
 
-    @ManyToOne(
-        cascade = {
+    @ManyToOne(cascade = {
             CascadeType.DETACH,
             CascadeType.MERGE,
             CascadeType.PERSIST,
             CascadeType.REFRESH,
-        }
-    )
+    })
     @JoinColumn(name = "club_id", referencedColumnName = "id")
     private Club club;
 }

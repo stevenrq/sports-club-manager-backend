@@ -30,19 +30,12 @@ public class Role implements Serializable {
     private String name;
 
     @EqualsAndHashCode.Exclude
-    @ManyToMany(
-        fetch = FetchType.EAGER,
-        cascade = {
+    @ManyToMany(fetch = FetchType.EAGER, cascade = {
             CascadeType.DETACH,
             CascadeType.MERGE,
             CascadeType.PERSIST,
             CascadeType.REFRESH,
-        }
-    )
-    @JoinTable(
-        name = "roles_authorities",
-        joinColumns = @JoinColumn(name = "role_id"),
-        inverseJoinColumns = @JoinColumn(name = "authority_id")
-    )
+    })
+    @JoinTable(name = "roles_authorities", joinColumns = @JoinColumn(name = "role_id"), inverseJoinColumns = @JoinColumn(name = "authority_id"))
     private Set<Authority> authorities = new HashSet<>();
 }

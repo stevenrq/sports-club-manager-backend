@@ -25,7 +25,7 @@ public class PlayerResponse {
 
     public boolean isAdmin() {
         return this.getRoles()
-            .stream()
-            .anyMatch(role -> role.getName().equals("ROLE_ADMIN"));
+                .stream()
+                .anyMatch(role -> role.getName().equals("ROLE_ADMIN"));
     }
 }

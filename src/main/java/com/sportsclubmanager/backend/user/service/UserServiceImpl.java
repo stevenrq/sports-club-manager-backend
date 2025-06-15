@@ -23,10 +23,9 @@ public class UserServiceImpl implements UserService<User> {
     private final PasswordEncoder passwordEncoder;
 
     public UserServiceImpl(
-        UserRepository userRepository,
-        RoleRepository roleRepository,
-        PasswordEncoder passwordEncoder
-    ) {
+            UserRepository userRepository,
+            RoleRepository roleRepository,
+            PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.passwordEncoder = passwordEncoder;
@@ -78,8 +77,7 @@ public class UserServiceImpl implements UserService<User> {
             userUpdated.setEmail(userUpdateRequest.getEmail());
             userUpdated.setUsername(userUpdateRequest.getUsername());
             userUpdated.setRoles(
-                RoleAuthorityUtils.getRoles(userUpdated, roleRepository)
-            );
+                    RoleAuthorityUtils.getRoles(userUpdated, roleRepository));
 
             return Optional.of(userRepository.save(userUpdated));
         }
@@ -94,9 +92,8 @@ public class UserServiceImpl implements UserService<User> {
 
     @Override
     public boolean updateAffiliationStatus(
-        Long id,
-        AffiliationStatus affiliationStatus
-    ) {
+            Long id,
+            AffiliationStatus affiliationStatus) {
         Optional<User> userOptional = userRepository.findById(id);
 
         if (userOptional.isPresent()) {

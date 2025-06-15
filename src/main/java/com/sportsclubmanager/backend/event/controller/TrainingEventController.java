@@ -19,10 +19,7 @@ public class TrainingEventController {
     private final EventService<Training> trainingEventService;
 
     public TrainingEventController(
-        @Qualifier("trainingEventService") EventService<
-            Training
-        > trainingEventService
-    ) {
+            @Qualifier("trainingEventService") EventService<Training> trainingEventService) {
         this.trainingEventService = trainingEventService;
     }
 
@@ -36,9 +33,9 @@ public class TrainingEventController {
     @PreAuthorize("hasAnyRole('CLUB_ADMIN', 'ADMIN')")
     public ResponseEntity<Training> getById(@PathVariable Long id) {
         return trainingEventService
-            .findById(id)
-            .map(ResponseEntity::ok)
-            .orElse(ResponseEntity.notFound().build());
+                .findById(id)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 
     @GetMapping
@@ -50,23 +47,20 @@ public class TrainingEventController {
     @GetMapping("/page/{page}")
     @PreAuthorize("hasAnyRole('CLUB_ADMIN', 'ADMIN')")
     public ResponseEntity<Page<Training>> getAllPaginated(
-        @PathVariable Integer page
-    ) {
+            @PathVariable Integer page) {
         return ResponseEntity.ok(
-            trainingEventService.findAll(PageRequest.of(page, 5))
-        );
+                trainingEventService.findAll(PageRequest.of(page, 5)));
     }
 
     @PutMapping("/{id}")
     @PreAuthorize("hasAnyRole('CLUB_ADMIN', 'ADMIN')")
     public ResponseEntity<Training> update(
-        @PathVariable Long id,
-        @RequestBody EventUpdateRequest trainingEventUpdateRequest
-    ) {
+            @PathVariable Long id,
+            @RequestBody EventUpdateRequest trainingEventUpdateRequest) {
         return trainingEventService
-            .update(id, trainingEventUpdateRequest)
-            .map(ResponseEntity::ok)
-            .orElse(ResponseEntity.notFound().build());
+                .update(id, trainingEventUpdateRequest)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 
     @DeleteMapping("/{id}")

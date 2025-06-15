@@ -20,29 +20,21 @@ import lombok.ToString;
 public class Player extends User {
 
     @JsonIgnoreProperties(value = { "players" })
-    @ManyToOne(
-        cascade = {
+    @ManyToOne(cascade = {
             CascadeType.DETACH,
             CascadeType.MERGE,
             CascadeType.PERSIST,
             CascadeType.REFRESH,
-        }
-    )
+    })
     @JoinColumn(name = "club_id", referencedColumnName = "id")
     private Club club;
 
-    @ManyToMany(
-        cascade = {
+    @ManyToMany(cascade = {
             CascadeType.DETACH,
             CascadeType.MERGE,
             CascadeType.PERSIST,
             CascadeType.REFRESH,
-        }
-    )
-    @JoinTable(
-        name = "players_events",
-        joinColumns = @JoinColumn(name = "player_id"),
-        inverseJoinColumns = @JoinColumn(name = "event_id")
-    )
+    })
+    @JoinTable(name = "players_events", joinColumns = @JoinColumn(name = "player_id"), inverseJoinColumns = @JoinColumn(name = "event_id"))
     private Set<Event> events = new HashSet<>();
 }

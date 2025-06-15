@@ -32,11 +32,10 @@ public class PlayerController {
     private final PlayerMapper playerMapper;
 
     public PlayerController(
-        @Qualifier("playerService") UserService<Player> userService,
-        @Qualifier("playerService") PlayerService playerService,
-        ValidationService validationService,
-        PlayerMapper playerMapper
-    ) {
+            @Qualifier("playerService") UserService<Player> userService,
+            @Qualifier("playerService") PlayerService playerService,
+            ValidationService validationService,
+            PlayerMapper playerMapper) {
         this.userService = userService;
         this.playerService = playerService;
         this.validationService = validationService;
@@ -45,12 +44,12 @@ public class PlayerController {
 
     @PostMapping
     public ResponseEntity<ApiResponse<PlayerResponse>> create(
-        @Valid @RequestBody Player player,
-        BindingResult bindingResult
-    ) {
-        ResponseEntity<ApiResponse<PlayerResponse>> validationResult =
-            validationService.handlePlayerValidation(player, bindingResult);
-        if (validationResult != null) return validationResult;
+            @Valid @RequestBody Player player,
+            BindingResult bindingResult) {
+        ResponseEntity<ApiResponse<PlayerResponse>> validationResult = validationService.handlePlayerValidation(player,
+                bindingResult);
+        if (validationResult != null)
+            return validationResult;
 
         Player savedPlayer = userService.save(player);
         PlayerResponse response = playerMapper.toPlayerResponse(savedPlayer);
@@ -63,74 +62,63 @@ public class PlayerController {
     @PreAuthorize("hasAnyRole('CLUB_ADMIN', 'ADMIN')")
     public ResponseEntity<PlayerResponse> getById(@PathVariable Long id) {
         return userService
-            .findById(id)
-            .map(player ->
-                ResponseEntity.ok(playerMapper.toPlayerResponse(player))
-            )
-            .orElse(ResponseEntity.notFound().build());
+                .findById(id)
+                .map(player -> ResponseEntity.ok(playerMapper.toPlayerResponse(player)))
+                .orElse(ResponseEntity.notFound().build());
     }
 
     @GetMapping("/username/{username}")
     @PreAuthorize("hasAnyRole('CLUB_ADMIN', 'ADMIN')")
     public ResponseEntity<PlayerResponse> getByUsername(
-        @PathVariable String username
-    ) {
+            @PathVariable String username) {
         return userService
-            .findByUsername(username)
-            .map(player ->
-                ResponseEntity.ok(playerMapper.toPlayerResponse(player))
-            )
-            .orElse(ResponseEntity.notFound().build());
+                .findByUsername(username)
+                .map(player -> ResponseEntity.ok(playerMapper.toPlayerResponse(player)))
+                .orElse(ResponseEntity.notFound().build());
     }
 
     @GetMapping
     @PreAuthorize("hasAnyRole('CLUB_ADMIN', 'ADMIN')")
     public ResponseEntity<List<PlayerResponse>> getAll() {
         return ResponseEntity.ok(
-            userService
-                .findAll()
-                .stream()
-                .map(playerMapper::toPlayerResponse)
-                .toList()
-        );
+                userService
+                        .findAll()
+                        .stream()
+                        .map(playerMapper::toPlayerResponse)
+                        .toList());
     }
 
     @GetMapping("/page/{page}")
     @PreAuthorize("hasAnyRole('CLUB_ADMIN', 'ADMIN')")
     public ResponseEntity<Page<PlayerResponse>> getAllPaginated(
-        @PathVariable Integer page
-    ) {
+            @PathVariable Integer page) {
         return ResponseEntity.ok(
-            userService
-                .findAll(PageRequest.of(page, 5))
-                .map(playerMapper::toPlayerResponse)
-        );
+                userService
+                        .findAll(PageRequest.of(page, 5))
+                        .map(playerMapper::toPlayerResponse));
     }
 
     @PutMapping("/{id}")
     @PreAuthorize("hasAnyRole('CLUB_ADMIN', 'COACH', 'ADMIN')")
     public ResponseEntity<ApiResponse<PlayerResponse>> update(
-        @PathVariable Long id,
-        @Valid @RequestBody UserUpdateRequest userUpdateRequest,
-        BindingResult bindingResult
-    ) {
-        ResponseEntity<ApiResponse<PlayerResponse>> validationResult =
-            validationService.handlePlayerValidation(
+            @PathVariable Long id,
+            @Valid @RequestBody UserUpdateRequest userUpdateRequest,
+            BindingResult bindingResult) {
+        ResponseEntity<ApiResponse<PlayerResponse>> validationResult = validationService.handlePlayerValidation(
                 userUpdateRequest,
-                bindingResult
-            );
-        if (validationResult != null) return validationResult;
+                bindingResult);
+        if (validationResult != null)
+            return validationResult;
 
         return userService
-            .update(id, userUpdateRequest)
-            .map(user -> {
-                PlayerResponse response = playerMapper.toPlayerResponse(user);
-                ApiResponse<PlayerResponse> apiResponse = new ApiResponse<>(
-                    response
-                );
-                return ResponseEntity.ok(apiResponse);
-            })
-            .orElse(ResponseEntity.notFound().build());
+                .update(id, userUpdateRequest)
+                .map(user -> {
+                    PlayerResponse response = playerMapper.toPlayerResponse(user);
+                    ApiResponse<PlayerResponse> apiResponse = new ApiResponse<>(
+                            response);
+                    return ResponseEntity.ok(apiResponse);
+                })
+                .orElse(ResponseEntity.notFound().build());
     }
 
     @DeleteMapping("/{id}")
@@ -148,60 +136,50 @@ public class PlayerController {
     @PatchMapping("/{id}/affiliation-status")
     @PreAuthorize("hasAnyRole('CLUB_ADMIN', 'ADMIN')")
     public ResponseEntity<Void> updateAffiliationStatus(
-        @PathVariable Long id,
-        @RequestBody AffiliationStatus affiliationStatus
-    ) {
+            @PathVariable Long id,
+            @RequestBody AffiliationStatus affiliationStatus) {
         boolean updated = userService.updateAffiliationStatus(
-            id,
-            affiliationStatus
-        );
+                id,
+                affiliationStatus);
         if (updated) {
             return ResponseEntity.ok().build();
         }
         return ResponseEntity.notFound().build();
     }
 
-    @PatchMapping(
-        "/{playerId}/register-in-tournament-event/{tournamentEventId}"
-    )
+    @PatchMapping("/{playerId}/register-in-tournament-event/{tournamentEventId}")
     @PreAuthorize("hasAnyRole('PLAYER', 'ADMIN')")
     public ResponseEntity<String> registerInEvent(
-        @PathVariable Long playerId,
-        @PathVariable Long tournamentEventId
-    ) {
+            @PathVariable Long playerId,
+            @PathVariable Long tournamentEventId) {
         boolean registered = playerService.registerInTournamentEvent(
-            playerId,
-            tournamentEventId
-        );
+                playerId,
+                tournamentEventId);
 
         if (registered) {
             return ResponseEntity.ok().build();
         }
 
         return ResponseEntity.badRequest()
-            .body(
-                "An error occurred while registering the player in the tournament event"
-            );
+                .body(
+                        "An error occurred while registering the player in the tournament event");
     }
 
     @PatchMapping("/{playerId}/register-in-training-event/{trainingEventId}")
     @PreAuthorize("hasAnyRole('PLAYER', 'ADMIN')")
     public ResponseEntity<String> registerInTrainingEvent(
-        @PathVariable Long playerId,
-        @PathVariable Long trainingEventId
-    ) {
+            @PathVariable Long playerId,
+            @PathVariable Long trainingEventId) {
         boolean registered = playerService.registerInTrainingEvent(
-            playerId,
-            trainingEventId
-        );
+                playerId,
+                trainingEventId);
 
         if (registered) {
             return ResponseEntity.ok().build();
         }
 
         return ResponseEntity.badRequest()
-            .body(
-                "An error occurred while registering the player in the training event"
-            );
+                .body(
+                        "An error occurred while registering the player in the training event");
     }
 }

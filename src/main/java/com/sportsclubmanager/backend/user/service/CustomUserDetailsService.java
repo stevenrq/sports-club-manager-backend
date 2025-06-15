@@ -14,7 +14,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * Servicio personalizado que implementa UserDetailsService de Spring Security para
+ * Servicio personalizado que implementa UserDetailsService de Spring Security
+ * para
  * cargar los detalles del usuario durante la autenticación.
  */
 @Service
@@ -36,32 +37,30 @@ public class CustomUserDetailsService implements UserDetailsService {
     @Override
     @Transactional(readOnly = true)
     public UserDetails loadUserByUsername(String username)
-        throws UsernameNotFoundException {
+            throws UsernameNotFoundException {
         Optional<User> userOptional = userRepository.findByUsername(username);
 
         if (userOptional.isEmpty()) {
             throw new UsernameNotFoundException(
-                "Usuario no encontrado con nombre de usuario: " + username
-            );
+                    "Usuario no encontrado con nombre de usuario: " + username);
         }
 
         User user = userOptional.orElseThrow();
 
         // La colección 'authorities' almacena tanto roles como autoridades
         Set<GrantedAuthority> authorities = user
-            .getRolesAndAuthorities()
-            .stream()
-            .map(SimpleGrantedAuthority::new)
-            .collect(Collectors.toSet());
+                .getRolesAndAuthorities()
+                .stream()
+                .map(SimpleGrantedAuthority::new)
+                .collect(Collectors.toSet());
 
         return new org.springframework.security.core.userdetails.User(
-            user.getUsername(),
-            user.getPassword(),
-            user.isEnabled(),
-            user.isAccountNonExpired(),
-            user.isCredentialsNonExpired(),
-            user.isAccountNonLocked(),
-            authorities
-        );
+                user.getUsername(),
+                user.getPassword(),
+                user.isEnabled(),
+                user.isAccountNonExpired(),
+                user.isCredentialsNonExpired(),
+                user.isAccountNonLocked(),
+                authorities);
     }
 }

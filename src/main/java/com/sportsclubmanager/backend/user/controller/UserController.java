@@ -30,10 +30,9 @@ public class UserController {
     private final UserMapper userMapper;
 
     public UserController(
-        @Qualifier("userServiceImpl") UserService<User> userService,
-        ValidationService validationService,
-        UserMapper userMapper
-    ) {
+            @Qualifier("userServiceImpl") UserService<User> userService,
+            ValidationService validationService,
+            UserMapper userMapper) {
         this.userService = userService;
         this.validationService = validationService;
         this.userMapper = userMapper;
@@ -41,12 +40,12 @@ public class UserController {
 
     @PostMapping
     public ResponseEntity<ApiResponse<UserResponse>> create(
-        @Valid @RequestBody User user,
-        BindingResult bindingResult
-    ) {
-        ResponseEntity<ApiResponse<UserResponse>> validationResult =
-            validationService.handleValidation(user, bindingResult);
-        if (validationResult != null) return validationResult;
+            @Valid @RequestBody User user,
+            BindingResult bindingResult) {
+        ResponseEntity<ApiResponse<UserResponse>> validationResult = validationService.handleValidation(user,
+                bindingResult);
+        if (validationResult != null)
+            return validationResult;
 
         User savedUser = userService.save(user);
         UserResponse response = userMapper.toUserResponse(savedUser);
@@ -59,70 +58,63 @@ public class UserController {
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<UserResponse> getById(@PathVariable Long id) {
         return userService
-            .findById(id)
-            .map(user -> ResponseEntity.ok(userMapper.toUserResponse(user)))
-            .orElse(ResponseEntity.notFound().build());
+                .findById(id)
+                .map(user -> ResponseEntity.ok(userMapper.toUserResponse(user)))
+                .orElse(ResponseEntity.notFound().build());
     }
 
     @GetMapping("/username/{username}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<UserResponse> getByUsername(
-        @PathVariable String username
-    ) {
+            @PathVariable String username) {
         return userService
-            .findByUsername(username)
-            .map(user -> ResponseEntity.ok(userMapper.toUserResponse(user)))
-            .orElse(ResponseEntity.notFound().build());
+                .findByUsername(username)
+                .map(user -> ResponseEntity.ok(userMapper.toUserResponse(user)))
+                .orElse(ResponseEntity.notFound().build());
     }
 
     @GetMapping
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<UserResponse>> getAll() {
         return ResponseEntity.ok(
-            userService
-                .findAll()
-                .stream()
-                .map(userMapper::toUserResponse)
-                .toList()
-        );
+                userService
+                        .findAll()
+                        .stream()
+                        .map(userMapper::toUserResponse)
+                        .toList());
     }
 
     @GetMapping("/page/{page}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Page<UserResponse>> getAllPaginated(
-        @PathVariable Integer page
-    ) {
+            @PathVariable Integer page) {
         return ResponseEntity.ok(
-            userService
-                .findAll(PageRequest.of(page, 5))
-                .map(userMapper::toUserResponse)
-        );
+                userService
+                        .findAll(PageRequest.of(page, 5))
+                        .map(userMapper::toUserResponse));
     }
 
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ApiResponse<UserResponse>> update(
-        @PathVariable Long id,
-        @Valid @RequestBody UserUpdateRequest userUpdateRequest,
-        BindingResult bindingResult
-    ) {
-        ResponseEntity<ApiResponse<UserResponse>> validationResult =
-            validationService.handleValidation(
+            @PathVariable Long id,
+            @Valid @RequestBody UserUpdateRequest userUpdateRequest,
+            BindingResult bindingResult) {
+        ResponseEntity<ApiResponse<UserResponse>> validationResult = validationService.handleValidation(
                 userUpdateRequest,
-                bindingResult
-            );
-        if (validationResult != null) return validationResult;
+                bindingResult);
+        if (validationResult != null)
+            return validationResult;
 
         return userService
-            .update(id, userUpdateRequest)
-            .map(user -> {
-                UserResponse response = userMapper.toUserResponse(user);
-                ApiResponse<UserResponse> apiResponse = new ApiResponse<>(
-                    response
-                );
-                return ResponseEntity.ok(apiResponse);
-            })
-            .orElse(ResponseEntity.notFound().build());
+                .update(id, userUpdateRequest)
+                .map(user -> {
+                    UserResponse response = userMapper.toUserResponse(user);
+                    ApiResponse<UserResponse> apiResponse = new ApiResponse<>(
+                            response);
+                    return ResponseEntity.ok(apiResponse);
+                })
+                .orElse(ResponseEntity.notFound().build());
     }
 
     @DeleteMapping("/{id}")
@@ -140,13 +132,11 @@ public class UserController {
     @PatchMapping("/{id}/affiliation-status")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> updateAffiliationStatus(
-        @PathVariable Long id,
-        @RequestBody AffiliationStatus affiliationStatus
-    ) {
+            @PathVariable Long id,
+            @RequestBody AffiliationStatus affiliationStatus) {
         boolean updated = userService.updateAffiliationStatus(
-            id,
-            affiliationStatus
-        );
+                id,
+                affiliationStatus);
         if (updated) {
             return ResponseEntity.ok().build();
         }

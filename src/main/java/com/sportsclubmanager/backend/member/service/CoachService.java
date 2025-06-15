@@ -24,10 +24,9 @@ public class CoachService implements UserService<Coach> {
     private final PasswordEncoder passwordEncoder;
 
     public CoachService(
-        CoachRepository coachRepository,
-        RoleRepository roleRepository,
-        PasswordEncoder passwordEncoder
-    ) {
+            CoachRepository coachRepository,
+            RoleRepository roleRepository,
+            PasswordEncoder passwordEncoder) {
         this.coachRepository = coachRepository;
         this.roleRepository = roleRepository;
         this.passwordEncoder = passwordEncoder;
@@ -68,9 +67,8 @@ public class CoachService implements UserService<Coach> {
     @Override
     @Transactional
     public Optional<Coach> update(
-        Long id,
-        UserUpdateRequest userUpdateRequest
-    ) {
+            Long id,
+            UserUpdateRequest userUpdateRequest) {
         Optional<Coach> coachOptional = coachRepository.findById(id);
 
         if (coachOptional.isPresent()) {
@@ -82,8 +80,7 @@ public class CoachService implements UserService<Coach> {
             coachUpdated.setEmail(userUpdateRequest.getEmail());
             coachUpdated.setUsername(userUpdateRequest.getUsername());
             coachUpdated.setRoles(
-                RoleAuthorityUtils.getRoles(coachUpdated, roleRepository)
-            );
+                    RoleAuthorityUtils.getRoles(coachUpdated, roleRepository));
 
             return Optional.of(coachRepository.save(coachUpdated));
         }
@@ -98,9 +95,8 @@ public class CoachService implements UserService<Coach> {
 
     @Override
     public boolean updateAffiliationStatus(
-        Long id,
-        AffiliationStatus affiliationStatus
-    ) {
+            Long id,
+            AffiliationStatus affiliationStatus) {
         Optional<Coach> coachOptional = coachRepository.findById(id);
 
         if (coachOptional.isPresent()) {

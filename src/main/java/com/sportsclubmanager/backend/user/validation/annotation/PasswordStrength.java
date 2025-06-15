@@ -12,13 +12,14 @@ import java.lang.annotation.Target;
 /**
  * Anotación personalizada para validar la fortaleza de una contraseña.
  * <p>
- * Esta anotación se utiliza para garantizar que una contraseña cumpla con los siguientes requisitos:
+ * Esta anotación se utiliza para garantizar que una contraseña cumpla con los
+ * siguientes requisitos:
  * <ul>
- *   <li>Al menos una letra minúscula</li>
- *   <li>Al menos una letra mayúscula</li>
- *   <li>Al menos un número</li>
- *   <li>Al menos un carácter especial</li>
- *   <li>Longitud mínima de 6 caracteres</li>
+ * <li>Al menos una letra minúscula</li>
+ * <li>Al menos una letra mayúscula</li>
+ * <li>Al menos un número</li>
+ * <li>Al menos un carácter especial</li>
+ * <li>Longitud mínima de 6 caracteres</li>
  * </ul>
  * Su validación es realizada por la clase {@link PasswordStrengthValidator}.
  */

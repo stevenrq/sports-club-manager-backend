@@ -20,7 +20,8 @@ public class ApiResponse<T> {
     private T data;
 
     /**
-     * Mapa de errores de validación donde la clave es el campo y el valor es el mensaje de error
+     * Mapa de errores de validación donde la clave es el campo y el valor es el
+     * mensaje de error
      */
     private Map<String, String> errors;
 
@@ -37,7 +38,8 @@ public class ApiResponse<T> {
     /**
      * Constructor para respuestas con errores de validación
      *
-     * @param errors mapa de errores donde la clave es el campo y el valor es el mensaje de error
+     * @param errors mapa de errores donde la clave es el campo y el valor es el
+     *               mensaje de error
      */
     public ApiResponse(Map<String, String> errors) {
         this.errors = errors;

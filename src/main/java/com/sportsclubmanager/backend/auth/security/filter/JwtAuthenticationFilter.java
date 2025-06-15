@@ -30,27 +30,27 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
  * del usuario y generar tokens JWT.
  */
 public class JwtAuthenticationFilter
-    extends UsernamePasswordAuthenticationFilter {
+        extends UsernamePasswordAuthenticationFilter {
 
     private final Logger log = LoggerFactory.getLogger(
-        JwtAuthenticationFilter.class
-    );
+            JwtAuthenticationFilter.class);
 
     private final AuthenticationManager authenticationManager;
 
     /**
-     * Constructor que recibe el AuthenticationManager necesario para el proceso de autenticación.
+     * Constructor que recibe el AuthenticationManager necesario para el proceso de
+     * autenticación.
      *
      * @param authenticationManager El gestor de autenticación a utilizar
      */
     public JwtAuthenticationFilter(
-        AuthenticationManager authenticationManager
-    ) {
+            AuthenticationManager authenticationManager) {
         this.authenticationManager = authenticationManager;
     }
 
     /**
-     * Intenta autenticar al usuario con las credenciales proporcionadas en la solicitud.
+     * Intenta autenticar al usuario con las credenciales proporcionadas en la
+     * solicitud.
      * Lee el nombre de usuario y contraseña del cuerpo de la solicitud JSON.
      *
      * @param request  La solicitud HTTP que contiene las credenciales
@@ -60,27 +60,25 @@ public class JwtAuthenticationFilter
      */
     @Override
     public Authentication attemptAuthentication(
-        HttpServletRequest request,
-        HttpServletResponse response
-    ) throws AuthenticationException {
+            HttpServletRequest request,
+            HttpServletResponse response) throws AuthenticationException {
         User user;
         String username = null;
         String password = null;
 
         try {
             user = new ObjectMapper()
-                .readValue(request.getInputStream(), User.class);
+                    .readValue(request.getInputStream(), User.class);
             username = user.getUsername();
             password = user.getPassword();
         } catch (IOException e) {
             log.error(
-                "No se pudieron analizar los datos del usuario de la solicitud. Asegúrese de que el formato JSON sea correcto. Error: {}",
-                e.getMessage()
-            );
+                    "No se pudieron analizar los datos del usuario de la solicitud. Asegúrese de que el formato JSON sea correcto. Error: {}",
+                    e.getMessage());
         }
 
-        UsernamePasswordAuthenticationToken authenticationToken =
-            new UsernamePasswordAuthenticationToken(username, password);
+        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(username,
+                password);
         return authenticationManager.authenticate(authenticationToken);
     }
 
@@ -97,33 +95,30 @@ public class JwtAuthenticationFilter
      */
     @Override
     protected void successfulAuthentication(
-        HttpServletRequest request,
-        HttpServletResponse response,
-        FilterChain chain,
-        Authentication authResult
-    ) throws IOException, ServletException {
-        org.springframework.security.core.userdetails.User user =
-            (org.springframework.security.core.userdetails.User) authResult.getPrincipal();
+            HttpServletRequest request,
+            HttpServletResponse response,
+            FilterChain chain,
+            Authentication authResult) throws IOException, ServletException {
+        org.springframework.security.core.userdetails.User user = (org.springframework.security.core.userdetails.User) authResult
+                .getPrincipal();
 
         String username = user.getUsername();
-        Collection<? extends GrantedAuthority> authorities =
-            user.getAuthorities();
+        Collection<? extends GrantedAuthority> authorities = user.getAuthorities();
 
         Claims claims = Jwts.claims()
-            .add(
-                "authorities",
-                new ObjectMapper().writeValueAsString(authorities)
-            )
-            .add("username", username)
-            .build();
+                .add(
+                        "authorities",
+                        new ObjectMapper().writeValueAsString(authorities))
+                .add("username", username)
+                .build();
 
         String token = Jwts.builder()
-            .subject(username)
-            .claims(claims)
-            .expiration(new Date(System.currentTimeMillis() + 3600000)) // 1 hora
-            .issuedAt(new Date())
-            .signWith(SECRET_KEY)
-            .compact();
+                .subject(username)
+                .claims(claims)
+                .expiration(new Date(System.currentTimeMillis() + 3600000)) // 1 hora
+                .issuedAt(new Date())
+                .signWith(SECRET_KEY)
+                .compact();
 
         Map<String, String> body = new HashMap<>();
         body.put("access_token", token);
@@ -145,10 +140,9 @@ public class JwtAuthenticationFilter
      */
     @Override
     protected void unsuccessfulAuthentication(
-        HttpServletRequest request,
-        HttpServletResponse response,
-        AuthenticationException failed
-    ) throws IOException, ServletException {
+            HttpServletRequest request,
+            HttpServletResponse response,
+            AuthenticationException failed) throws IOException, ServletException {
         Map<String, String> body = new HashMap<>();
         body.put("mensaje", "Login fallido");
         body.put("error", failed.getMessage());

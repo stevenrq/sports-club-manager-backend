@@ -40,29 +40,24 @@ public class TournamentEventService implements EventService<Tournament> {
 
     @Override
     public Optional<Tournament> update(
-        Long id,
-        EventUpdateRequest eventUpdateRequest
-    ) {
+            Long id,
+            EventUpdateRequest eventUpdateRequest) {
         Optional<Tournament> tournamentOptional = tournamentRepository.findById(
-            id
-        );
+                id);
 
         if (tournamentOptional.isPresent()) {
             Tournament tournamentUpdated = tournamentOptional.orElseThrow();
 
             tournamentUpdated.setName(eventUpdateRequest.getName());
             tournamentUpdated.setDescription(
-                eventUpdateRequest.getDescription()
-            );
+                    eventUpdateRequest.getDescription());
             tournamentUpdated.setLocation(eventUpdateRequest.getLocation());
             tournamentUpdated.setStartDate(eventUpdateRequest.getStartDate());
             tournamentUpdated.setEndDate(eventUpdateRequest.getEndDate());
             tournamentUpdated.setEventVisibility(
-                eventUpdateRequest.getEventVisibility()
-            );
+                    eventUpdateRequest.getEventVisibility());
             tournamentUpdated.setMaximumParticipants(
-                eventUpdateRequest.getMaximumParticipants()
-            );
+                    eventUpdateRequest.getMaximumParticipants());
 
             return Optional.of(tournamentRepository.save(tournamentUpdated));
         }

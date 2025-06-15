@@ -40,9 +40,8 @@ public class TrainingEventService implements EventService<Training> {
 
     @Override
     public Optional<Training> update(
-        Long id,
-        EventUpdateRequest eventUpdateRequest
-    ) {
+            Long id,
+            EventUpdateRequest eventUpdateRequest) {
         Optional<Training> trainingOptional = trainingRepository.findById(id);
 
         if (trainingOptional.isPresent()) {
@@ -54,11 +53,9 @@ public class TrainingEventService implements EventService<Training> {
             trainingUpdated.setStartDate(eventUpdateRequest.getStartDate());
             trainingUpdated.setEndDate(eventUpdateRequest.getEndDate());
             trainingUpdated.setEventVisibility(
-                eventUpdateRequest.getEventVisibility()
-            );
+                    eventUpdateRequest.getEventVisibility());
             trainingUpdated.setMaximumParticipants(
-                eventUpdateRequest.getMaximumParticipants()
-            );
+                    eventUpdateRequest.getMaximumParticipants());
 
             return Optional.of(trainingRepository.save(trainingUpdated));
         }

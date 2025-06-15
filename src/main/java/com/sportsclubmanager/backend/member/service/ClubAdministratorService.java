@@ -24,7 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class ClubAdministratorService
-    implements UserService<ClubAdministrator> {
+        implements UserService<ClubAdministrator> {
 
     private final ClubAdministratorRepository clubAdministratorRepository;
     private final RoleRepository roleRepository;
@@ -34,12 +34,11 @@ public class ClubAdministratorService
     private final PasswordEncoder passwordEncoder;
 
     public ClubAdministratorService(
-        ClubAdministratorRepository clubAdministratorRepository,
-        RoleRepository roleRepository,
-        ClubRepository clubRepository,
-        PlayerRepository playerRepository,
-        PasswordEncoder passwordEncoder
-    ) {
+            ClubAdministratorRepository clubAdministratorRepository,
+            RoleRepository roleRepository,
+            ClubRepository clubRepository,
+            PlayerRepository playerRepository,
+            PasswordEncoder passwordEncoder) {
         this.clubAdministratorRepository = clubAdministratorRepository;
         this.roleRepository = roleRepository;
         this.clubRepository = clubRepository;
@@ -51,11 +50,9 @@ public class ClubAdministratorService
     @Transactional
     public ClubAdministrator save(ClubAdministrator clubAdministrator) {
         clubAdministrator.setRoles(
-            RoleAuthorityUtils.getRoles(clubAdministrator, roleRepository)
-        );
+                RoleAuthorityUtils.getRoles(clubAdministrator, roleRepository));
         clubAdministrator.setPassword(
-            passwordEncoder.encode(clubAdministrator.getPassword())
-        );
+                passwordEncoder.encode(clubAdministrator.getPassword()));
         return clubAdministratorRepository.save(clubAdministrator);
     }
 
@@ -86,15 +83,12 @@ public class ClubAdministratorService
     @Override
     @Transactional
     public Optional<ClubAdministrator> update(
-        Long id,
-        UserUpdateRequest userUpdateRequest
-    ) {
-        Optional<ClubAdministrator> clubAdminOptional =
-            clubAdministratorRepository.findById(id);
+            Long id,
+            UserUpdateRequest userUpdateRequest) {
+        Optional<ClubAdministrator> clubAdminOptional = clubAdministratorRepository.findById(id);
 
         if (clubAdminOptional.isPresent()) {
-            ClubAdministrator clubAdminUpdated =
-                clubAdminOptional.orElseThrow();
+            ClubAdministrator clubAdminUpdated = clubAdminOptional.orElseThrow();
 
             clubAdminUpdated.setName(userUpdateRequest.getName());
             clubAdminUpdated.setLastName(userUpdateRequest.getLastName());
@@ -102,12 +96,10 @@ public class ClubAdministratorService
             clubAdminUpdated.setEmail(userUpdateRequest.getEmail());
             clubAdminUpdated.setUsername(userUpdateRequest.getUsername());
             clubAdminUpdated.setRoles(
-                RoleAuthorityUtils.getRoles(clubAdminUpdated, roleRepository)
-            );
+                    RoleAuthorityUtils.getRoles(clubAdminUpdated, roleRepository));
 
             return Optional.of(
-                clubAdministratorRepository.save(clubAdminUpdated)
-            );
+                    clubAdministratorRepository.save(clubAdminUpdated));
         }
         return Optional.empty();
     }
@@ -120,11 +112,9 @@ public class ClubAdministratorService
 
     @Override
     public boolean updateAffiliationStatus(
-        Long id,
-        AffiliationStatus affiliationStatus
-    ) {
-        Optional<ClubAdministrator> clubAdminOptional =
-            clubAdministratorRepository.findById(id);
+            Long id,
+            AffiliationStatus affiliationStatus) {
+        Optional<ClubAdministrator> clubAdminOptional = clubAdministratorRepository.findById(id);
 
         if (clubAdminOptional.isPresent()) {
             ClubAdministrator clubAdmin = clubAdminOptional.orElseThrow();
@@ -149,33 +139,25 @@ public class ClubAdministratorService
      */
     public void linkPlayerToClub(Long clubId, Long playerId) {
         Club club = clubRepository
-            .findById(clubId)
-            .orElseThrow(() ->
-                new ResourceNotFoundException(
-                    "Club no encontrado con ID: " + clubId
-                )
-            );
+                .findById(clubId)
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "Club no encontrado con ID: " + clubId));
 
         Player player = playerRepository
-            .findById(playerId)
-            .orElseThrow(() ->
-                new ResourceNotFoundException(
-                    "Jugador no encontrado con ID: " + playerId
-                )
-            );
+                .findById(playerId)
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "Jugador no encontrado con ID: " + playerId));
 
         if (club.getPlayers().contains(player)) {
             throw new ClubAlreadyHasPlayerException(
-                "Club con ID: " +
-                clubId +
-                " ya tiene al jugador con ID: " +
-                playerId +
-                " asociado"
-            );
+                    "Club con ID: " +
+                            clubId +
+                            " ya tiene al jugador con ID: " +
+                            playerId +
+                            " asociado");
         } else if (player.getClub() != null) {
             throw new PlayerAlreadyHasClubException(
-                "Jugador con ID: " + playerId + " ya tiene un club asociado"
-            );
+                    "Jugador con ID: " + playerId + " ya tiene un club asociado");
         }
 
         club.getPlayers().add(player);

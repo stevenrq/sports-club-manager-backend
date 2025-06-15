@@ -25,11 +25,8 @@ public class TournamentEventController {
     private final ValidationService validationService;
 
     public TournamentEventController(
-        @Qualifier("tournamentEventService") EventService<
-            Tournament
-        > tournamentEventService,
-        ValidationService validationService
-    ) {
+            @Qualifier("tournamentEventService") EventService<Tournament> tournamentEventService,
+            ValidationService validationService) {
         this.tournamentEventService = tournamentEventService;
         this.validationService = validationService;
     }
@@ -37,17 +34,15 @@ public class TournamentEventController {
     @PostMapping
     @PreAuthorize("hasAnyRole('CLUB_ADMIN', 'ADMIN')")
     public ResponseEntity<ApiResponse<Tournament>> create(
-        @Valid @RequestBody Tournament tournament,
-        BindingResult bindingResult
-    ) {
+            @Valid @RequestBody Tournament tournament,
+            BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             return validationService.validate(bindingResult);
         }
 
         Tournament savedTournament = tournamentEventService.save(tournament);
         ApiResponse<Tournament> apiResponse = new ApiResponse<>(
-            savedTournament
-        );
+                savedTournament);
         return ResponseEntity.status(HttpStatus.CREATED).body(apiResponse);
     }
 
@@ -55,9 +50,9 @@ public class TournamentEventController {
     @PreAuthorize("hasAnyRole('CLUB_ADMIN', 'ADMIN')")
     public ResponseEntity<Tournament> getById(@PathVariable Long id) {
         return tournamentEventService
-            .findById(id)
-            .map(ResponseEntity::ok)
-            .orElse(ResponseEntity.notFound().build());
+                .findById(id)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 
     @GetMapping
@@ -69,40 +64,35 @@ public class TournamentEventController {
     @GetMapping("/page/{page}")
     @PreAuthorize("hasAnyRole('CLUB_ADMIN', 'ADMIN')")
     public ResponseEntity<Page<Tournament>> getAllPaginated(
-        @PathVariable Integer page
-    ) {
+            @PathVariable Integer page) {
         return ResponseEntity.ok(
-            tournamentEventService.findAll(PageRequest.of(page, 5))
-        );
+                tournamentEventService.findAll(PageRequest.of(page, 5)));
     }
 
     @PutMapping("/{id}")
     @PreAuthorize("hasAnyRole('CLUB_ADMIN', 'ADMIN')")
     public ResponseEntity<ApiResponse<Tournament>> update(
-        @PathVariable Long id,
-        @Valid @RequestBody EventUpdateRequest tournamentEventUpdateRequest,
-        BindingResult bindingResult
-    ) {
+            @PathVariable Long id,
+            @Valid @RequestBody EventUpdateRequest tournamentEventUpdateRequest,
+            BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             return validationService.validate(bindingResult);
         }
 
         return tournamentEventService
-            .update(id, tournamentEventUpdateRequest)
-            .map(tournamentUpdated -> {
-                ApiResponse<Tournament> apiResponse = new ApiResponse<>(
-                    tournamentUpdated
-                );
-                return ResponseEntity.ok(apiResponse);
-            })
-            .orElse(ResponseEntity.notFound().build());
+                .update(id, tournamentEventUpdateRequest)
+                .map(tournamentUpdated -> {
+                    ApiResponse<Tournament> apiResponse = new ApiResponse<>(
+                            tournamentUpdated);
+                    return ResponseEntity.ok(apiResponse);
+                })
+                .orElse(ResponseEntity.notFound().build());
     }
 
     @DeleteMapping("/{id}")
     @PreAuthorize("hasAnyRole('CLUB_ADMIN', 'ADMIN')")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
-        Optional<Tournament> tournamentOptional =
-            tournamentEventService.findById(id);
+        Optional<Tournament> tournamentOptional = tournamentEventService.findById(id);
 
         if (tournamentOptional.isPresent()) {
             tournamentEventService.deleteById(id);

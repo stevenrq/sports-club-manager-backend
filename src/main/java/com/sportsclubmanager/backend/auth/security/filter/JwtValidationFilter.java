@@ -24,7 +24,8 @@ import org.springframework.security.web.authentication.www.BasicAuthenticationFi
 
 /**
  * Filtro para validar tokens JWT en las solicitudes entrantes.
- * Extiende BasicAuthenticationFilter para procesar la autenticación basada en token.
+ * Extiende BasicAuthenticationFilter para procesar la autenticación basada en
+ * token.
  */
 public class JwtValidationFilter extends BasicAuthenticationFilter {
 
@@ -49,10 +50,9 @@ public class JwtValidationFilter extends BasicAuthenticationFilter {
      */
     @Override
     protected void doFilterInternal(
-        HttpServletRequest request,
-        HttpServletResponse response,
-        FilterChain chain
-    ) throws IOException, ServletException {
+            HttpServletRequest request,
+            HttpServletResponse response,
+            FilterChain chain) throws IOException, ServletException {
         String header = request.getHeader(AUTHORIZATION_HEADER);
 
         if (header == null || !header.startsWith("Bearer ")) {
@@ -64,44 +64,40 @@ public class JwtValidationFilter extends BasicAuthenticationFilter {
 
         try {
             Claims claims = Jwts.parser()
-                .verifyWith(SECRET_KEY)
-                .build()
-                .parseSignedClaims(token)
-                .getPayload();
+                    .verifyWith(SECRET_KEY)
+                    .build()
+                    .parseSignedClaims(token)
+                    .getPayload();
             String username = claims.getSubject();
             Object authorityClaims = claims.get("authorities");
 
             // Deserializa la cadena JSON de reclamaciones de autoridad en una colección de
-            // objetos GrantedAuthority utilizando un Jackson ObjectMapper con una unión personalizada
+            // objetos GrantedAuthority utilizando un Jackson ObjectMapper con una unión
+            // personalizada
             Collection<? extends GrantedAuthority> authorities = Arrays.asList(
-                new ObjectMapper()
-                    .addMixIn(
-                        SimpleGrantedAuthority.class,
-                        SimpleGrantedAuthorityJsonCreator.class
-                    )
-                    .readValue(
-                        authorityClaims.toString().getBytes(),
-                        SimpleGrantedAuthority[].class
-                    )
-            );
+                    new ObjectMapper()
+                            .addMixIn(
+                                    SimpleGrantedAuthority.class,
+                                    SimpleGrantedAuthorityJsonCreator.class)
+                            .readValue(
+                                    authorityClaims.toString().getBytes(),
+                                    SimpleGrantedAuthority[].class));
 
-            UsernamePasswordAuthenticationToken authenticationToken =
-                new UsernamePasswordAuthenticationToken(
+            UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
                     username,
                     null,
-                    authorities
-                );
+                    authorities);
 
             SecurityContextHolder.getContext()
-                .setAuthentication(authenticationToken);
+                    .setAuthentication(authenticationToken);
             chain.doFilter(request, response);
         } catch (Exception e) {
             Map<String, String> body = new HashMap<>();
             body.put("error", e.getMessage());
 
             response
-                .getWriter()
-                .write(new ObjectMapper().writeValueAsString(body));
+                    .getWriter()
+                    .write(new ObjectMapper().writeValueAsString(body));
             response.setContentType(CONTENT_TYPE);
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         }

@@ -20,20 +20,9 @@ public interface ClubMapper {
     @Mapping(source = "phoneNumber", target = "phoneNumber")
     @Mapping(source = "enabled", target = "enabled")
     @Mapping(source = "creationDate", target = "creationDate")
-    @Mapping(
-        source = "clubAdministrator.name",
-        target = "clubAdministratorName"
-    )
-    @Mapping(
-        source = "coaches",
-        target = "coachNames",
-        qualifiedByName = "mapCoachNames"
-    )
-    @Mapping(
-        source = "players",
-        target = "playerNames",
-        qualifiedByName = "mapPlayerNames"
-    )
+    @Mapping(source = "clubAdministrator.name", target = "clubAdministratorName")
+    @Mapping(source = "coaches", target = "coachNames", qualifiedByName = "mapCoachNames")
+    @Mapping(source = "players", target = "playerNames", qualifiedByName = "mapPlayerNames")
     ClubResponse toClubResponse(Club club);
 
     /**
@@ -48,10 +37,10 @@ public interface ClubMapper {
             return Collections.emptySet();
         }
         return coaches
-            .stream()
-            .map(Coach::getName)
-            .filter(Objects::nonNull)
-            .collect(Collectors.toSet());
+                .stream()
+                .map(Coach::getName)
+                .filter(Objects::nonNull)
+                .collect(Collectors.toSet());
     }
 
     /**
@@ -66,9 +55,9 @@ public interface ClubMapper {
             return Collections.emptySet();
         }
         return players
-            .stream()
-            .map(Player::getName)
-            .filter(Objects::nonNull)
-            .collect(Collectors.toSet());
+                .stream()
+                .map(Player::getName)
+                .filter(Objects::nonNull)
+                .collect(Collectors.toSet());
     }
 }

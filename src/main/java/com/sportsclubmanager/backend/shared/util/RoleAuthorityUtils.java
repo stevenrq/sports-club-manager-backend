@@ -29,7 +29,8 @@ public class RoleAuthorityUtils {
     private static final String ROLE_PLAYER = "ROLE_PLAYER";
     private static final String ROLE_USER = "ROLE_USER";
 
-    private RoleAuthorityUtils() {}
+    private RoleAuthorityUtils() {
+    }
 
     /**
      * Obtiene un conjunto de nombres de roles y autoridades a partir de un conjunto
@@ -38,19 +39,19 @@ public class RoleAuthorityUtils {
      * @param roles El conjunto de roles del cual se extraerán los nombres de los
      *              roles y autoridades. No debe ser nulo.
      * @return Un conjunto de cadenas que representan los nombres de los roles y
-     * autoridades.
+     *         autoridades.
      * @throws NullPointerException Si el conjunto de roles proporcionado es nulo.
      */
     public static Set<String> getRolesAndAuthorities(Set<Role> roles) {
         Objects.requireNonNull(roles, "La colección de roles no debe ser nula");
 
         return Stream.concat(
-            roles.stream().map(Role::getName),
-            roles
-                .stream()
-                .flatMap(role -> role.getAuthorities().stream())
-                .map(Authority::getName)
-        ).collect(Collectors.toSet());
+                roles.stream().map(Role::getName),
+                roles
+                        .stream()
+                        .flatMap(role -> role.getAuthorities().stream())
+                        .map(Authority::getName))
+                .collect(Collectors.toSet());
     }
 
     /**
@@ -63,13 +64,12 @@ public class RoleAuthorityUtils {
      * @param roleRepository El repositorio para acceder a la información de los
      *                       roles. No debe ser nulo.
      * @return Un conjunto de objetos {@link Role} asociados al usuario o a la
-     * solicitud de actualización.
+     *         solicitud de actualización.
      * @throws RoleRetrievalException Si ocurre un error al recuperar los roles.
      */
     public static Set<Role> getRoles(
-        Object user,
-        RoleRepository roleRepository
-    ) {
+            Object user,
+            RoleRepository roleRepository) {
         Set<Role> roles = new HashSet<>();
 
         if (user instanceof User u) {
@@ -93,36 +93,30 @@ public class RoleAuthorityUtils {
      *                                nombre de rol inválido o un error inesperado.
      */
     private static Set<Role> getRolesFromUser(
-        User user,
-        RoleRepository roleRepository
-    ) {
+            User user,
+            RoleRepository roleRepository) {
         Set<Role> roles = new HashSet<>();
 
         try {
-            Set<String> rolesAndAuthoritiesOfUser =
-                user.getRolesAndAuthorities();
+            Set<String> rolesAndAuthoritiesOfUser = user.getRolesAndAuthorities();
 
             if (rolesAndAuthoritiesOfUser.isEmpty()) {
                 roles.add(roleRepository.findByName(ROLE_USER).orElseThrow());
 
                 if (user instanceof ClubAdministrator) {
                     roles.add(
-                        roleRepository.findByName(ROLE_CLUB_ADMIN).orElseThrow()
-                    );
+                            roleRepository.findByName(ROLE_CLUB_ADMIN).orElseThrow());
                 } else if (user instanceof Coach) {
                     roles.add(
-                        roleRepository.findByName(ROLE_COACH).orElseThrow()
-                    );
+                            roleRepository.findByName(ROLE_COACH).orElseThrow());
                 } else if (user instanceof Player) {
                     roles.add(
-                        roleRepository.findByName(ROLE_PLAYER).orElseThrow()
-                    );
+                            roleRepository.findByName(ROLE_PLAYER).orElseThrow());
                 }
             } else {
                 for (String role : rolesAndAuthoritiesOfUser) {
                     Optional<Role> roleOptional = roleRepository.findByName(
-                        role
-                    );
+                            role);
                     roleOptional.ifPresent(roles::add);
                 }
             }
@@ -132,9 +126,8 @@ public class RoleAuthorityUtils {
             throw new RoleRetrievalException("Nombre de rol inválido", e);
         } catch (Exception e) {
             throw new RoleRetrievalException(
-                "Se produjo un error inesperado",
-                e
-            );
+                    "Se produjo un error inesperado",
+                    e);
         }
         return roles;
     }
@@ -147,7 +140,7 @@ public class RoleAuthorityUtils {
      * @param roleRepository    El repositorio para acceder a la información de los
      *                          roles. No debe ser nulo.
      * @return Un conjunto de objetos {@link Role} especificados en la solicitud de
-     * actualización.
+     *         actualización.
      * @throws RoleRetrievalException Si ocurre un error al recuperar los roles
      *                                debido a la no existencia de un rol o un
      *                                error inesperado.
@@ -155,34 +148,29 @@ public class RoleAuthorityUtils {
      *                                actualización está vacío.
      */
     private static Set<Role> getRolesFromUserUpdateRequest(
-        UserUpdateRequest userUpdateRequest,
-        RoleRepository roleRepository
-    ) {
+            UserUpdateRequest userUpdateRequest,
+            RoleRepository roleRepository) {
         Set<Role> roles = new HashSet<>();
 
         try {
-            Set<String> rolesAndAuthoritiesOfUserUpdateRequest =
-                userUpdateRequest.getRolesAndAuthorities();
+            Set<String> rolesAndAuthoritiesOfUserUpdateRequest = userUpdateRequest.getRolesAndAuthorities();
 
             if (!rolesAndAuthoritiesOfUserUpdateRequest.isEmpty()) {
                 for (String role : rolesAndAuthoritiesOfUserUpdateRequest) {
                     Optional<Role> roleOptional = roleRepository.findByName(
-                        role
-                    );
+                            role);
                     roleOptional.ifPresent(roles::add);
                 }
             } else {
                 throw new NullPointerException(
-                    "Los roles de usuario no deben ser nulos"
-                );
+                        "Los roles de usuario no deben ser nulos");
             }
         } catch (NoSuchElementException e) {
             throw new RoleRetrievalException("Error al recuperar roles", e);
         } catch (Exception e) {
             throw new RoleRetrievalException(
-                "Se produjo un error inesperado",
-                e
-            );
+                    "Se produjo un error inesperado",
+                    e);
         }
         return roles;
     }

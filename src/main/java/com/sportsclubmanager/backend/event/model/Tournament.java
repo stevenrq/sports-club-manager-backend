@@ -7,4 +7,5 @@ import jakarta.persistence.Table;
 @Entity
 @Table(name = "tournaments")
 @PrimaryKeyJoinColumn(referencedColumnName = "id")
-public class Tournament extends Event {}
+public class Tournament extends Event {
+}

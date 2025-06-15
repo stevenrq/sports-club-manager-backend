@@ -15,14 +15,12 @@ import lombok.ToString;
 @PrimaryKeyJoinColumn(referencedColumnName = "id")
 public class ClubAdministrator extends User {
 
-    @OneToOne(
-        cascade = {
+    @OneToOne(cascade = {
             CascadeType.DETACH,
             CascadeType.MERGE,
             CascadeType.PERSIST,
             CascadeType.REFRESH,
-        }
-    )
+    })
     @JoinColumn(name = "club_id", referencedColumnName = "id")
     private Club club;
 }

@@ -63,7 +63,8 @@ public class User implements Serializable {
     private String username;
 
     /**
-     * Se utiliza una longitud de 60 porque BCrypt generará una cadena de longitud 60
+     * Se utiliza una longitud de 60 porque BCrypt generará una cadena de longitud
+     * 60
      */
     @NotBlank
     @PasswordStrength
@@ -86,20 +87,13 @@ public class User implements Serializable {
     @Transient
     private boolean admin;
 
-    @ManyToMany(
-        fetch = FetchType.EAGER,
-        cascade = {
+    @ManyToMany(fetch = FetchType.EAGER, cascade = {
             CascadeType.DETACH,
             CascadeType.MERGE,
             CascadeType.PERSIST,
             CascadeType.REFRESH,
-        }
-    )
-    @JoinTable(
-        name = "users_roles",
-        joinColumns = @JoinColumn(name = "user_id"),
-        inverseJoinColumns = @JoinColumn(name = "role_id")
-    )
+    })
+    @JoinTable(name = "users_roles", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> roles = new HashSet<>();
 
     @Enumerated(EnumType.STRING)

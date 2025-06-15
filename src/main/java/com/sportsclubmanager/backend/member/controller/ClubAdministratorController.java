@@ -32,15 +32,10 @@ public class ClubAdministratorController {
     private final UserMapper userMapper;
 
     public ClubAdministratorController(
-        @Qualifier("clubAdministratorService") UserService<
-            ClubAdministrator
-        > userService,
-        @Qualifier(
-            "clubAdministratorService"
-        ) ClubAdministratorService clubAdministratorService,
-        ValidationService validationService,
-        UserMapper userMapper
-    ) {
+            @Qualifier("clubAdministratorService") UserService<ClubAdministrator> userService,
+            @Qualifier("clubAdministratorService") ClubAdministratorService clubAdministratorService,
+            ValidationService validationService,
+            UserMapper userMapper) {
         this.userService = userService;
         this.clubAdministratorService = clubAdministratorService;
         this.validationService = validationService;
@@ -49,15 +44,13 @@ public class ClubAdministratorController {
 
     @PostMapping
     public ResponseEntity<ApiResponse<UserResponse>> create(
-        @Valid @RequestBody ClubAdministrator clubAdministrator,
-        BindingResult bindingResult
-    ) {
-        ResponseEntity<ApiResponse<UserResponse>> validationResult =
-            validationService.handleValidation(
+            @Valid @RequestBody ClubAdministrator clubAdministrator,
+            BindingResult bindingResult) {
+        ResponseEntity<ApiResponse<UserResponse>> validationResult = validationService.handleValidation(
                 clubAdministrator,
-                bindingResult
-            );
-        if (validationResult != null) return validationResult;
+                bindingResult);
+        if (validationResult != null)
+            return validationResult;
 
         ClubAdministrator savedClubAdmin = userService.save(clubAdministrator);
         UserResponse response = userMapper.toUserResponse(savedClubAdmin);
@@ -70,82 +63,70 @@ public class ClubAdministratorController {
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<UserResponse> getById(@PathVariable Long id) {
         return userService
-            .findById(id)
-            .map(clubAdministrator ->
-                ResponseEntity.ok(userMapper.toUserResponse(clubAdministrator))
-            )
-            .orElse(ResponseEntity.notFound().build());
+                .findById(id)
+                .map(clubAdministrator -> ResponseEntity.ok(userMapper.toUserResponse(clubAdministrator)))
+                .orElse(ResponseEntity.notFound().build());
     }
 
     @GetMapping("/username/{username}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<UserResponse> getByUsername(
-        @PathVariable String username
-    ) {
+            @PathVariable String username) {
         return userService
-            .findByUsername(username)
-            .map(clubAdministrator ->
-                ResponseEntity.ok(userMapper.toUserResponse(clubAdministrator))
-            )
-            .orElse(ResponseEntity.notFound().build());
+                .findByUsername(username)
+                .map(clubAdministrator -> ResponseEntity.ok(userMapper.toUserResponse(clubAdministrator)))
+                .orElse(ResponseEntity.notFound().build());
     }
 
     @GetMapping
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<UserResponse>> getAll() {
         return ResponseEntity.ok(
-            userService
-                .findAll()
-                .stream()
-                .map(userMapper::toUserResponse)
-                .toList()
-        );
+                userService
+                        .findAll()
+                        .stream()
+                        .map(userMapper::toUserResponse)
+                        .toList());
     }
 
     @GetMapping("/page/{page}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Page<UserResponse>> getAllPaginated(
-        @PathVariable Integer page
-    ) {
+            @PathVariable Integer page) {
         return ResponseEntity.ok(
-            userService
-                .findAll(PageRequest.of(page, 5))
-                .map(userMapper::toUserResponse)
-        );
+                userService
+                        .findAll(PageRequest.of(page, 5))
+                        .map(userMapper::toUserResponse));
     }
 
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ApiResponse<UserResponse>> update(
-        @PathVariable Long id,
-        @Valid @RequestBody UserUpdateRequest userUpdateRequest,
-        BindingResult bindingResult
-    ) {
-        ResponseEntity<ApiResponse<UserResponse>> validationResult =
-            validationService.handleValidation(
+            @PathVariable Long id,
+            @Valid @RequestBody UserUpdateRequest userUpdateRequest,
+            BindingResult bindingResult) {
+        ResponseEntity<ApiResponse<UserResponse>> validationResult = validationService.handleValidation(
                 userUpdateRequest,
-                bindingResult
-            );
-        if (validationResult != null) return validationResult;
+                bindingResult);
+        if (validationResult != null)
+            return validationResult;
 
         return userService
-            .update(id, userUpdateRequest)
-            .map(user -> {
-                UserResponse response = userMapper.toUserResponse(user);
-                ApiResponse<UserResponse> apiResponse = new ApiResponse<>(
-                    response
-                );
-                return ResponseEntity.ok(apiResponse);
-            })
-            .orElse(ResponseEntity.notFound().build());
+                .update(id, userUpdateRequest)
+                .map(user -> {
+                    UserResponse response = userMapper.toUserResponse(user);
+                    ApiResponse<UserResponse> apiResponse = new ApiResponse<>(
+                            response);
+                    return ResponseEntity.ok(apiResponse);
+                })
+                .orElse(ResponseEntity.notFound().build());
     }
 
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         Optional<ClubAdministrator> clubAdminOptional = userService.findById(
-            id
-        );
+                id);
 
         if (clubAdminOptional.isPresent()) {
             userService.deleteById(id);
@@ -157,13 +138,11 @@ public class ClubAdministratorController {
     @PatchMapping("/{id}/affiliation-status")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> updateAffiliationStatus(
-        @PathVariable Long id,
-        @RequestBody AffiliationStatus affiliationStatus
-    ) {
+            @PathVariable Long id,
+            @RequestBody AffiliationStatus affiliationStatus) {
         boolean affiliationStatusUpdated = userService.updateAffiliationStatus(
-            id,
-            affiliationStatus
-        );
+                id,
+                affiliationStatus);
         if (affiliationStatusUpdated) {
             return ResponseEntity.ok().build();
         }
@@ -172,9 +151,8 @@ public class ClubAdministratorController {
 
     @PatchMapping("/clubs/{clubId}/players/{playerId}")
     public ResponseEntity<Void> linkPlayerToClub(
-        @PathVariable Long clubId,
-        @PathVariable Long playerId
-    ) {
+            @PathVariable Long clubId,
+            @PathVariable Long playerId) {
         clubAdministratorService.linkPlayerToClub(clubId, playerId);
         return ResponseEntity.ok().build();
     }

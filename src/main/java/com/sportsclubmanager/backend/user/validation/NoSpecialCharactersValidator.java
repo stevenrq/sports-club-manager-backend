@@ -5,7 +5,7 @@ import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 
 public class NoSpecialCharactersValidator
-    implements ConstraintValidator<NoSpecialCharacters, String> {
+        implements ConstraintValidator<NoSpecialCharacters, String> {
 
     @Override
     public boolean isValid(String value, ConstraintValidatorContext context) {
