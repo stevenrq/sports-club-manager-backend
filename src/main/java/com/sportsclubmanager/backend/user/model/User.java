@@ -32,7 +32,6 @@ public class User implements Serializable {
     private Long id;
 
     @NotNull
-    @Size(min = 7, max = 10)
     @Column(name = "national_id", nullable = false, unique = true, length = 10)
     private Long nationalId;
 
