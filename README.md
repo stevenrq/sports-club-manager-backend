@@ -85,6 +85,7 @@ Los scripts `schema.sql` y `data.sql` permiten crear y poblar la base de datos a
     ```bash
     ./mvnw spring-boot:run
     ```
+    > **Nota:** Si estás ejecutando la aplicación localmente y haciendo solicitudes desde tu máquina (ej. usando Postman o un frontend local), asegúrate de usar `https` en la URL (ej. `https://localhost:8080`). Esto es debido a la configuración de seguridad que puede incluir HSTS (HTTP Strict Transport Security), la cual fuerza el uso de HTTPS.
 
 ## Principales Endpoints
 
